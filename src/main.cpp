@@ -9,7 +9,7 @@
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    Ui::MainWindow w;
     Network::TcpClient client{"192.168.88.19", 2106};
 
     client.connect();
