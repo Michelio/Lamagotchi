@@ -23,10 +23,8 @@ void TcpConnection::stop()
 
 void TcpConnection::asyncRead()
 {
-    std::cout << "async read...\n";
     io::async_read(m_socket, io::buffer(&m_incomingDataLength, sizeof(m_incomingDataLength)),
                    [this](errorCode ec, size_t bytesReceived) {
-                       std::cout << "stage 1\n";
                        if (ec)
                        {
                            std::cout << "Failed to receive packet length. " << ec.what() << '\n';
@@ -43,7 +41,6 @@ void TcpConnection::asyncRead()
 
                        io::async_read(m_socket, io::buffer(data + sizeof(m_incomingDataLength), m_incomingDataLength),
                                       [this, data](errorCode ec, size_t bytesReceived) {
-                                          std::cout << "stage 2\n";
                                           if (ec)
                                           {
                                               std::cout << "Failed to read packet load. " << ec.what() << '\n';
@@ -51,7 +48,7 @@ void TcpConnection::asyncRead()
                                               return;
                                           }
 
-                                          printPacket(data, bytesReceived + 2);
+                                          printPacket(data, m_incomingDataLength);
                                           onRead();
                                       });
                    });
