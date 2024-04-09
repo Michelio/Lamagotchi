@@ -1,26 +1,25 @@
 #ifndef TCP_CONNECTION_H
 #define TCP_CONNECTION_H
 
+#include <lamagotchi/containers/thread_safe_queue.hpp>
+
 #include <boost/asio.hpp>
 
 namespace Network
 {
 
+using namespace Containers;
 namespace io = boost::asio;
 using tcp = io::ip::tcp;
 using errorCode = boost::system::error_code;
 
 class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 {
-    using DataHandler = std::function<void(const uint8_t*)>;
-    using ErrorHandler = std::function<void(std::string_view)>;
-    using Pointer = std::shared_ptr<TcpConnection>;
-
 public:
     explicit TcpConnection(tcp::socket&& socket);
     void start();
     void stop();
-    void post(const uint8_t* data, uint16_t length);
+    void post(uint8_t* data, uint16_t length);
 
 private:
     void asyncRead();
@@ -32,7 +31,7 @@ private:
 private:
     tcp::socket m_socket;
     uint16_t m_incomingDataLength = 0;
-    uint16_t m_outcomingDataLength = 0;
+    ThreadSafeQueue<std::pair<uint8_t*, uint16_t>> m_outcomingData;
 };
 
 } // namespace Network
