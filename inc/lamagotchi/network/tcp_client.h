@@ -19,7 +19,6 @@ public:
     explicit TcpClient(std::string_view address, const uint32_t port);
     void connect();
     void run();
-    void cancel();
 
 private:
     io::io_context m_ioContext;

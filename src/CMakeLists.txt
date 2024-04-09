@@ -5,7 +5,8 @@ set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/ui/main_window.h
     ${INCROOT}/lamagotchi/network/tcp_client.h
     ${INCROOT}/lamagotchi/network/tcp_connection.h
-    ${INCROOT}/lamagotchi/crypting/blow_fish.h)
+    ${INCROOT}/lamagotchi/crypting/blow_fish.h
+    ${INCROOT}/lamagotchi/containers/thread_safe_queue.hpp)
 set(PROJECT_SOURCES
     ${SRCROOT}/main.cpp ${SRCROOT}/ui/main_window.cpp
     ${SRCROOT}/network/tcp_client.cpp ${SRCROOT}/network/tcp_connection.cpp
