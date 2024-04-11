@@ -4,18 +4,22 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src)
 set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/ui/main_window.h
     ${INCROOT}/lamagotchi/crypting/blow_fish.h
+    ${INCROOT}/lamagotchi/crypting/rsa.h
     ${INCROOT}/lamagotchi/containers/thread_safe_queue.hpp
     ${INCROOT}/lamagotchi/network/tcp_client.h
     ${INCROOT}/lamagotchi/network/tcp_connection.h
     ${INCROOT}/lamagotchi/network/packet_handler.h
     ${INCROOT}/lamagotchi/network/login_handler.h
-    ${INCROOT}/lamagotchi/network/packets/login/init.hpp)
+    ${INCROOT}/lamagotchi/network/packets/login/init.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/gameguard_auth.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/request_gg_auth.hpp)
 set(PROJECT_SOURCES
     ${SRCROOT}/main.cpp
     ${SRCROOT}/ui/main_window.cpp
+    ${SRCROOT}/crypting/blow_fish.cpp
+    ${SRCROOT}/crypting/rsa.cpp
     ${SRCROOT}/network/tcp_client.cpp
     ${SRCROOT}/network/tcp_connection.cpp
-    ${SRCROOT}/crypting/blow_fish.cpp
     ${SRCROOT}/network/packet_handler.cpp
     ${SRCROOT}/network/login_handler.cpp)
 
