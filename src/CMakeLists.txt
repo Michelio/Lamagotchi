@@ -3,14 +3,21 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src)
 
 set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/ui/main_window.h
+    ${INCROOT}/lamagotchi/crypting/blow_fish.h
+    ${INCROOT}/lamagotchi/containers/thread_safe_queue.hpp
     ${INCROOT}/lamagotchi/network/tcp_client.h
     ${INCROOT}/lamagotchi/network/tcp_connection.h
-    ${INCROOT}/lamagotchi/crypting/blow_fish.h
-    ${INCROOT}/lamagotchi/containers/thread_safe_queue.hpp)
+    ${INCROOT}/lamagotchi/network/packet_handler.h
+    ${INCROOT}/lamagotchi/network/login_handler.h
+    ${INCROOT}/lamagotchi/network/packets/login/init.hpp)
 set(PROJECT_SOURCES
-    ${SRCROOT}/main.cpp ${SRCROOT}/ui/main_window.cpp
-    ${SRCROOT}/network/tcp_client.cpp ${SRCROOT}/network/tcp_connection.cpp
-    ${SRCROOT}/crypting/blow_fish.cpp)
+    ${SRCROOT}/main.cpp
+    ${SRCROOT}/ui/main_window.cpp
+    ${SRCROOT}/network/tcp_client.cpp
+    ${SRCROOT}/network/tcp_connection.cpp
+    ${SRCROOT}/crypting/blow_fish.cpp
+    ${SRCROOT}/network/packet_handler.cpp
+    ${SRCROOT}/network/login_handler.cpp)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(Lamagotchi MANUAL_FINALIZATION ${PROJECT_SOURCES}
