@@ -1,4 +1,5 @@
 #include "lamagotchi/network/tcp_connection.h"
+#include "lamagotchi/network/login_handler.h"
 
 #include <iomanip>
 #include <iostream>
@@ -34,7 +35,7 @@ void TcpConnection::asyncRead()
         [this](errorCode ec, size_t bytesReceived) {
             if (ec)
             {
-                std::cout << "Failed to receive packet length. " << ec.what() << '\n';
+                std::cerr << "Failed to receive packet length. " << ec.what() << '\n';
                 // TODO: handle error.
                 return;
             }
@@ -52,8 +53,11 @@ void TcpConnection::asyncRead()
                                    // TODO: handle error.
                                    return;
                                }
+                               LoginHandler handler;
 
+                               auto packet = handler.parse(data.get());
                                self->printPacket(data.get(), self->m_incomingDataLength);
+
                                self->onRead();
                            });
         });
@@ -76,14 +80,20 @@ void TcpConnection::asyncWrite()
                             // TODO: handle error.
                             return;
                         }
-                        if (!self->m_outcomingData.empty())
-                        {
-                            self->asyncWrite();
-                        }
+
+                        self->onWrite();
                     });
 }
 
-void TcpConnection::printPacket(const uint8_t* const data, uint16_t length) const
+void TcpConnection::onWrite()
+{
+    if (!m_outcomingData.empty())
+    {
+        asyncWrite();
+    }
+}
+
+void TcpConnection::printPacket(uint8_t* const data, uint16_t length) const
 {
     std::cout << std::hex << std::setfill('0');
     for (int i = 0; i < length; ++i)

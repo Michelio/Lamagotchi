@@ -26,7 +26,7 @@ private:
     void onRead();
     void asyncWrite();
     void onWrite();
-    void printPacket(const uint8_t* const data, uint16_t length) const;
+    void printPacket(uint8_t* const data, uint16_t length) const;
 
 private:
     tcp::socket m_socket;
