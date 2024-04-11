@@ -55,7 +55,7 @@ void TcpConnection::asyncRead()
                                }
                                LoginHandler handler;
 
-                               auto packet = handler.parse(data.get());
+                               auto packet = handler.deserialize(data.get());
                                self->printPacket(data.get(), self->m_incomingDataLength);
 
                                self->onRead();

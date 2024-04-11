@@ -12,6 +12,9 @@ namespace Packets
 {
 struct Packet
 {
+    Packet(uint16_t length, uint8_t type) : length(length), type(type)
+    {
+    }
     uint16_t length = 0;
     uint8_t type = 0xff;
 };

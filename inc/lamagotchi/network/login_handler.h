@@ -13,8 +13,10 @@ class LoginHandler : public PacketHandler
 {
 public:
     LoginHandler();
-    [[nodiscard]] packetPointer parse(uint8_t* data) override final;
-    [[nodiscard]] dataPointer build(Packets::Packet& packet) override final;
+    void setKey(std::array<uint8_t, 0x10> key);
+
+    [[nodiscard]] packetPointer deserialize(uint8_t* data) override final;
+    [[nodiscard]] dataPointer serialize(Packets::Packet& packet) override final;
 
 private:
     static std::array<std::function<packetPointer(uint8_t* data, uint16_t length)>, 0xff> m_parseHandler;
