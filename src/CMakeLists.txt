@@ -12,6 +12,7 @@ set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/network/login_handler.h
     ${INCROOT}/lamagotchi/network/packets/login/init.hpp
     ${INCROOT}/lamagotchi/network/packets/login/gameguard_auth.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/request_login_auth.hpp
     ${INCROOT}/lamagotchi/network/packets/login/request_gg_auth.hpp)
 set(PROJECT_SOURCES
     ${SRCROOT}/main.cpp

@@ -11,9 +11,11 @@ namespace Packets
 
 struct GameguardAuth : Packet
 {
-    GameguardAuth(uint8_t* data, uint16_t length) : Packet(length, 0x0b)
+    explicit GameguardAuth(uint16_t length, uint8_t type) : Packet(length, type)
     {
     }
+
+    uint32_t ggKey = 0;
 };
 
 } // namespace Packets
