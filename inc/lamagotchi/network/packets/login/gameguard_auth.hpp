@@ -1,5 +1,5 @@
-#ifndef GAMEGUARD_AUTH_H
-#define GAMEGUARD_AUTH_H
+#ifndef GAMEGUARD_AUTH_HPP
+#define GAMEGUARD_AUTH_HPP
 
 #include "lamagotchi/network/packets/packet.hpp"
 
@@ -11,12 +11,14 @@ namespace Packets
 
 struct GameguardAuth : Packet
 {
-    GameguardAuth(uint8_t* data, uint16_t length) : Packet(length, 0x0b)
+    explicit GameguardAuth(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
     {
     }
+
+    uint32_t ggKey = 0;
 };
 
 } // namespace Packets
 } // namespace Network
 
-#endif // GAMEGUARD_AUTH_H
+#endif // GAMEGUARD_AUTH_HPP

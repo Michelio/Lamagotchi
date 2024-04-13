@@ -10,9 +10,17 @@ set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/network/tcp_connection.h
     ${INCROOT}/lamagotchi/network/packet_handler.h
     ${INCROOT}/lamagotchi/network/login_handler.h
-    ${INCROOT}/lamagotchi/network/packets/login/init.hpp
     ${INCROOT}/lamagotchi/network/packets/login/gameguard_auth.hpp
-    ${INCROOT}/lamagotchi/network/packets/login/request_gg_auth.hpp)
+    ${INCROOT}/lamagotchi/network/packets/login/init.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/login_fail.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/login_ok.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/play_fail.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/play_ok.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/request_gg_auth.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/request_login_auth.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/request_server_list.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/request_server_login.hpp
+    ${INCROOT}/lamagotchi/network/packets/login/server_list.hpp)
 set(PROJECT_SOURCES
     ${SRCROOT}/main.cpp
     ${SRCROOT}/ui/main_window.cpp

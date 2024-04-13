@@ -9,6 +9,7 @@ namespace Network
 
 TcpConnection::TcpConnection(tcp::socket&& socket) : m_socket(std::move(socket))
 {
+    LoginHandler::init();
 }
 
 void TcpConnection::start()
