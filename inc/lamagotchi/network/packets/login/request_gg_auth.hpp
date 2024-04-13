@@ -11,7 +11,7 @@ namespace Packets
 
 struct RequestGGAuth : Packet
 {
-    RequestGGAuth(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
+    RequestGGAuth(uint8_t type = 0x07, uint16_t length = 0x00) : Packet{type, length}
     {
     }
 

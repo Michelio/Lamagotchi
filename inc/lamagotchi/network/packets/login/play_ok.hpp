@@ -13,7 +13,7 @@ namespace Packets
 
 struct PlayOk : Packet
 {
-    explicit PlayOk(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
+    explicit PlayOk(uint8_t type = 0x07, uint16_t length = 0x00) : Packet{type, length}
     {
     }
 

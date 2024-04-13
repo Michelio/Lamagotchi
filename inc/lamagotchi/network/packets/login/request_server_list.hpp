@@ -11,7 +11,7 @@ namespace Packets
 
 struct RequestServerList : Packet
 {
-    explicit RequestServerList(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
+    explicit RequestServerList(uint8_t type = 0x05, uint16_t length = 0x00) : Packet{type, length}
     {
     }
 };

@@ -13,7 +13,7 @@ namespace Packets
 
 struct LoginOk : Packet
 {
-    explicit LoginOk(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
+    explicit LoginOk(uint8_t type = 0x03, uint16_t length = 0x00) : Packet{type, length}
     {
     }
 
