@@ -3,6 +3,9 @@
 
 #include "lamagotchi/network/packets/packet.hpp"
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -20,5 +23,6 @@ struct LoginFail : Packet
 
 } // namespace Packets
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // LOGIN_FAIL_HPP

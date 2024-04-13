@@ -4,6 +4,9 @@
 #include <array>
 #include <openssl/rsa.h>
 
+namespace Lamagotchi
+{
+
 namespace Crypting
 {
 
@@ -22,5 +25,6 @@ private:
 };
 
 } // namespace Crypting
+} // namespace Lamagotchi
 
 #endif // RSA_H

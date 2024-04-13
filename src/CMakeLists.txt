@@ -21,9 +21,6 @@ set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/network/packets/login/request_server_list.hpp
     ${INCROOT}/lamagotchi/network/packets/login/request_server_login.hpp
     ${INCROOT}/lamagotchi/network/packets/login/server_list.hpp
-    ${INCROOT}/lamagotchi/logic/logic.hpp
-    ${INCROOT}/lamagotchi/logic/login_logic.h
-    ${INCROOT}/lamagotchi/logic/game_logic.h
     ${INCROOT}/lamagotchi/bot_client.h
     ${INCROOT}/lamagotchi/bot_session.h)
 
@@ -36,8 +33,6 @@ set(PROJECT_SOURCES
     ${SRCROOT}/network/tcp_connection.cpp
     ${SRCROOT}/network/packet_handler.cpp
     ${SRCROOT}/network/login_handler.cpp
-    ${SRCROOT}/logic/login_logic.cpp
-    ${SRCROOT}/logic/game_logic.cpp
     ${SRCROOT}/bot_client.cpp
     ${SRCROOT}/bot_session.cpp)
 

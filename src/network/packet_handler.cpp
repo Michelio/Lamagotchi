@@ -2,6 +2,9 @@
 
 #include <bit>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -18,3 +21,4 @@ uint32_t PacketHandler::calculateChecksum(uint8_t* data, uint16_t length)
 }
 
 } // namespace Network
+} // namespace Lamagotchi

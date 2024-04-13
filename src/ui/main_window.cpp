@@ -3,11 +3,14 @@
 #include <QDockWidget>
 #include <QGraphicsView>
 #include <QListView>
+#include <QMenuBar>
 #include <QPushButton>
 #include <QTabWidget>
 #include <QTextEdit>
 #include <QVBoxLayout>
-#include <QMenuBar>
+
+namespace Lamagotchi
+{
 
 namespace Ui
 {
@@ -59,3 +62,4 @@ MainWindow::~MainWindow()
 }
 
 } // namespace Ui
+} // namespace Lamagotchi

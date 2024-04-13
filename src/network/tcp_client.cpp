@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -15,8 +18,8 @@ TcpClient::TcpClient(std::string_view address, const uint32_t port) : m_address(
 
 void TcpClient::connect()
 {
-    auto t_socket = std::make_shared<tcp::socket>(m_ioContext);
-    io::async_connect(*t_socket, m_endpoints, [this, socket = t_socket](errorCode ec, tcp::endpoint ep) {
+    auto socket = std::make_shared<tcp::socket>(m_ioContext);
+    io::async_connect(*socket, m_endpoints, [this, socket](errorCode ec, tcp::endpoint ep) {
         if (ec)
         {
             std::cout << "Can't connect to the server. " << ec.what() << '\n';
@@ -24,11 +27,9 @@ void TcpClient::connect()
             return;
         }
 
-        std::cout << "Connected!!!\n";
-
+        std::cout << "Inside connect handler\n";
         auto connection = std::make_shared<TcpConnection>(std::move(*socket));
-        m_connections.insert(connection);
-        connection->start();
+        onConnectHandler(connection);
     });
 }
 
@@ -38,3 +39,4 @@ void TcpClient::run()
 }
 
 } // namespace Network
+} // namespace Lamagotchi

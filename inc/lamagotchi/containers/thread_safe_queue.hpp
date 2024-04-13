@@ -5,6 +5,9 @@
 #include <mutex>
 #include <queue>
 
+namespace Lamagotchi
+{
+
 namespace Containers
 {
 
@@ -46,5 +49,6 @@ private:
 };
 
 } // namespace Containers
+} // namespace Lamagotchi
 
 #endif // THREAD_SAFE_QUEUE_HPP

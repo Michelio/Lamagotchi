@@ -5,6 +5,9 @@
 
 #include <vector>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -34,5 +37,6 @@ struct ServerList : Packet
 
 } // namespace Packets
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // SERVER_LIST_HPP

@@ -5,6 +5,9 @@
 
 #include <array>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -24,5 +27,6 @@ struct Init : Packet
 
 } // namespace Packets
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // INIT_HPP

@@ -5,6 +5,9 @@
 #include <openssl/blowfish.h>
 #include <stdint.h>
 
+namespace Lamagotchi
+{
+
 namespace Crypting
 {
 
@@ -25,5 +28,6 @@ private:
 };
 
 } // namespace Crypting
+} // namespace Lamagotchi
 
 #endif // BLOW_FISH_H

@@ -2,6 +2,9 @@
 
 #include <bit>
 
+namespace Lamagotchi
+{
+
 namespace Crypting
 {
 
@@ -32,3 +35,4 @@ void BlowFish::decrypt(uint8_t* data, uint16_t length)
 }
 
 } // namespace Crypting
+} // namespace Lamagotchi

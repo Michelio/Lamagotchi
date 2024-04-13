@@ -8,6 +8,9 @@
 #include <functional>
 #include <optional>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -17,13 +20,13 @@ public:
     LoginHandler();
     void setKey(std::array<uint8_t, 0x10> key);
 
-    [[nodiscard]] packetPointer deserialize(uint8_t* data) override final;
-    [[nodiscard]] dataPointer serialize(Packets::Packet& packet) override final;
+    [[nodiscard]] PacketPtr deserialize(uint8_t* data) override final;
+    [[nodiscard]] DataPtr serialize(Packets::Packet& packet) override final;
     static void init();
 
 private:
-    static std::array<std::function<packetPointer(uint8_t* data, uint16_t length)>, 0xff> m_parseHandler;
-    static std::array<std::function<dataPointer(Packets::Packet& packet)>, 0xff> m_buildHandler;
+    static std::array<std::function<PacketPtr(uint8_t* data, uint16_t length)>, 0xff> m_parseHandler;
+    static std::array<std::function<DataPtr(Packets::Packet& packet)>, 0xff> m_buildHandler;
     Crypting::BlowFish m_blowFish;
     std::optional<Crypting::Rsa> m_rsa;
     std::array<uint8_t, 0x08> m_sessionKey1 = {};
@@ -31,5 +34,6 @@ private:
 };
 
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // LOGIN_HANDLER_H

@@ -5,6 +5,9 @@
 
 #include <array>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -22,5 +25,6 @@ struct LoginOk : Packet
 
 } // namespace Packets
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // LOGIN_OK_HPP

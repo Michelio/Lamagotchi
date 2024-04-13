@@ -3,6 +3,9 @@
 
 #include "lamagotchi/network/packets/packet.hpp"
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -18,5 +21,6 @@ struct RequestServerList : Packet
 
 } // namespace Packets
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // REQUEST_SERVER_LIST_HPP

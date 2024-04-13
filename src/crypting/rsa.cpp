@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+namespace Lamagotchi
+{
+
 namespace Crypting
 {
 
@@ -41,3 +44,4 @@ void Rsa::decrypt(uint8_t* data, uint16_t length)
 }
 
 } // namespace Crypting
+} // namespace Lamagotchi

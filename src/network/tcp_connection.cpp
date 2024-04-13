@@ -1,15 +1,16 @@
 #include "lamagotchi/network/tcp_connection.h"
-#include "lamagotchi/network/login_handler.h"
 
 #include <iomanip>
 #include <iostream>
+
+namespace Lamagotchi
+{
 
 namespace Network
 {
 
 TcpConnection::TcpConnection(tcp::socket&& socket) : m_socket(std::move(socket))
 {
-    LoginHandler::init();
 }
 
 void TcpConnection::start()
@@ -31,37 +32,34 @@ void TcpConnection::post(uint8_t* data, uint16_t length)
 
 void TcpConnection::asyncRead()
 {
-    io::async_read(
-        m_socket, io::buffer(&m_incomingDataLength, sizeof(m_incomingDataLength)),
-        [this](errorCode ec, size_t bytesReceived) {
-            if (ec)
-            {
-                std::cerr << "Failed to receive packet length. " << ec.what() << '\n';
-                // TODO: handle error.
-                return;
-            }
+    io::async_read(m_socket, io::buffer(&m_incomingDataLength, sizeof(m_incomingDataLength)),
+                   [this](errorCode ec, size_t bytesReceived) {
+                       if (ec)
+                       {
+                           std::cerr << "Failed to receive packet length. " << ec.what() << '\n';
+                           // TODO: handle error.
+                           return;
+                       }
 
-            std::shared_ptr<uint8_t[]> data(new uint8_t[m_incomingDataLength], std::default_delete<uint8_t[]>());
-            std::memcpy(data.get(), &m_incomingDataLength, sizeof(m_incomingDataLength));
+                       std::shared_ptr<uint8_t[]> data(new uint8_t[m_incomingDataLength]);
+                       std::memcpy(data.get(), &m_incomingDataLength, sizeof(m_incomingDataLength));
 
-            m_incomingDataLength -= sizeof(m_incomingDataLength);
+                       m_incomingDataLength -= sizeof(m_incomingDataLength);
 
-            io::async_read(m_socket, io::buffer(data.get() + sizeof(m_incomingDataLength), m_incomingDataLength),
-                           [self = shared_from_this(), data](errorCode ec, size_t bytesReceived) {
-                               if (ec)
-                               {
-                                   std::cerr << "Failed to read packet load. " << ec.what() << '\n';
-                                   // TODO: handle error.
-                                   return;
-                               }
-                               LoginHandler handler;
+                       io::async_read(m_socket,
+                                      io::buffer(data.get() + sizeof(m_incomingDataLength), m_incomingDataLength),
+                                      [self = shared_from_this(), data](errorCode ec, size_t bytesReceived) {
+                                          if (ec)
+                                          {
+                                              std::cerr << "Failed to read packet load. " << ec.what() << '\n';
+                                              // TODO: handle error.
+                                              return;
+                                          }
 
-                               auto packet = handler.deserialize(data.get());
-                               self->printPacket(data.get(), self->m_incomingDataLength);
-
-                               self->onRead();
-                           });
-        });
+                                          self->onReadHandler(data.get());
+                                          self->onRead();
+                                      });
+                   });
 }
 
 void TcpConnection::onRead()
@@ -116,3 +114,4 @@ void TcpConnection::printPacket(uint8_t* const data, uint16_t length) const
 }
 
 } // namespace Network
+} // namespace Lamagotchi

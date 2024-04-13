@@ -5,6 +5,9 @@
 
 #include <string>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -24,5 +27,6 @@ struct RequestLoginAuth : Packet
 
 } // namespace Packets
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // !REQUEST_LOGIN_AUTH_HPP

@@ -5,6 +5,9 @@
 
 #include <boost/asio.hpp>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -20,6 +23,7 @@ public:
     void start();
     void stop();
     void post(uint8_t* data, uint16_t length);
+    std::function<void(uint8_t* data)> onReadHandler;
 
 private:
     void asyncRead();
@@ -35,5 +39,6 @@ private:
 };
 
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // TCP_CONNECTION_H
