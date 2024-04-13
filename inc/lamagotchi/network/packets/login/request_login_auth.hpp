@@ -13,7 +13,7 @@ namespace Packets
 
 struct RequestLoginAuth : Packet
 {
-    RequestLoginAuth(uint16_t length, uint8_t type) : Packet(length, type)
+    RequestLoginAuth(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
     {
     }
 

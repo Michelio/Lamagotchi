@@ -1,25 +1,25 @@
-#ifndef PACKET_H
-#define PACKET_H
+#ifndef PACKET_HPP
+#define PACKET_HPP
 
 #include <stdint.h>
 
 namespace Network
 {
 
-class PacketHandler;
-
 namespace Packets
 {
+
 struct Packet
 {
-    Packet(uint16_t length, uint8_t type) : length(length), type(type)
+    explicit Packet(uint8_t type, uint16_t length = 0x00) : length(length), type(type)
     {
     }
-    uint16_t length = 0;
-    uint8_t type = 0xff;
-};
-} // namespace Packets
 
+    uint16_t length = 0;
+    uint8_t type;
+};
+
+} // namespace Packets
 } // namespace Network
 
-#endif // PACKET_H
+#endif // PACKET_HPP

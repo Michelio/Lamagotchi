@@ -1,5 +1,5 @@
-#ifndef REQUEST_GG_AUTH_H
-#define REQUEST_GG_AUTH_H
+#ifndef REQUEST_GG_AUTH_HPP
+#define REQUEST_GG_AUTH_HPP
 
 #include "lamagotchi/network/packets/packet.hpp"
 
@@ -11,7 +11,7 @@ namespace Packets
 
 struct RequestGGAuth : Packet
 {
-    RequestGGAuth(uint16_t length, uint8_t type) : Packet(length, type)
+    RequestGGAuth(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
     {
     }
 
@@ -21,4 +21,4 @@ struct RequestGGAuth : Packet
 } // namespace Packets
 } // namespace Network
 
-#endif // REQUEST_GG_AUTH_H
+#endif // REQUEST_GG_AUTH_HPP

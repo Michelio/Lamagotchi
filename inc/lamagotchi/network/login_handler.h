@@ -26,7 +26,8 @@ private:
     static std::array<std::function<dataPointer(Packets::Packet& packet)>, 0xff> m_buildHandler;
     Crypting::BlowFish m_blowFish;
     std::optional<Crypting::Rsa> m_rsa;
-    std::array<uint8_t, 0x08> sessionKey1 = {};
+    std::array<uint8_t, 0x08> m_sessionKey1 = {};
+    std::array<uint8_t, 0x08> m_sessionKey2 = {};
 };
 
 } // namespace Network

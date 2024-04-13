@@ -1,5 +1,5 @@
-#ifndef LOGIN_OK_HPP
-#define LOGIN_OK_HPP
+#ifndef PLAY_OK_HPP
+#define PLAY_OK_HPP
 
 #include "lamagotchi/network/packets/packet.hpp"
 
@@ -11,9 +11,9 @@ namespace Network
 namespace Packets
 {
 
-struct LoginOk : Packet
+struct PlayOk : Packet
 {
-    explicit LoginOk(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
+    explicit PlayOk(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
     {
     }
 
@@ -23,4 +23,4 @@ struct LoginOk : Packet
 } // namespace Packets
 } // namespace Network
 
-#endif // LOGIN_OK_HPP
+#endif // PLAY_OK_HPP
