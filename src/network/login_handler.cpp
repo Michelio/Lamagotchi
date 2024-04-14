@@ -31,11 +31,6 @@ LoginHandler::LoginHandler() : m_blowFish(Crypting::s_blowFishKey.data(), Crypti
 {
 }
 
-void LoginHandler::setKey(std::array<uint8_t, 0x10> key)
-{
-    m_blowFish.setKey(key.data(), key.size());
-}
-
 PacketPtr LoginHandler::deserialize(uint8_t* data)
 {
     uint16_t length = 0;
@@ -46,6 +41,7 @@ PacketPtr LoginHandler::deserialize(uint8_t* data)
     offset = sizeof(uint16_t);
     m_blowFish.decrypt(data, length);
     type = data[offset];
+    printPacket(data, length);
 
     if (!m_parseHandler[type])
     {
@@ -57,8 +53,9 @@ PacketPtr LoginHandler::deserialize(uint8_t* data)
     auto packet = m_parseHandler[type](data, length);
     if (packet->type == 0x00)
     {
-        Crypting::scramble(std::bit_cast<Init*>(packet.get())->rsaKey.data());
+        Crypting::unscramble(std::bit_cast<Init*>(packet.get())->rsaKey.data());
         m_rsa.emplace(std::bit_cast<Init*>(packet.get())->rsaKey);
+        m_blowFish.setKey(std::bit_cast<Init*>(packet.get())->bfKey.data(), 0x10);
     }
 
     return packet;
@@ -75,12 +72,15 @@ DataPtr LoginHandler::serialize(Packet& packet)
 
     auto data = m_buildHandler[packet.type](packet);
 
+    printPacket(data.get(), packet.length);
     if (packet.type == 0x00)
     {
         m_rsa->encrypt(data.get(), 0x80);
-
         auto sum = calculateChecksum(data.get(), packet.length);
         std::memcpy(data.get() + packet.length - 16, &sum, sizeof(sum));
+
+        std::cout << "RSAed\n";
+        printPacket(data.get(), packet.length);
     }
 
     else if (packet.type == 0x02 || packet.type == 0x05)
@@ -93,6 +93,27 @@ DataPtr LoginHandler::serialize(Packet& packet)
     m_blowFish.encrypt(data.get(), packet.length);
 
     return data;
+}
+
+void LoginHandler::printPacket(uint8_t* const data, uint16_t length) const
+{
+    std::cout << std::hex << std::setfill('0');
+    for (int i = 0; i < length; ++i)
+    {
+        if (i % 0x10 == 0)
+        {
+            std::cout << "\n0x" << std::setw(2) << static_cast<uint32_t>(i) << " | ";
+        }
+
+        std::cout << std::setw(2) << static_cast<uint32_t>(data[i]);
+
+        if (i != 0 && (i + 1) % 4 == 0)
+            std::cout << '\t';
+
+        else
+            std::cout << ' ';
+    }
+    std::cout << '\n';
 }
 
 void LoginHandler::init()
@@ -184,7 +205,11 @@ void LoginHandler::init()
 
     // Gameguard Auth [0b]
     m_parseHandler[0x0b] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        return std::make_shared<GameguardAuth>(data[2], length);
+        auto packet = std::make_shared<GameguardAuth>(data[2], length);
+
+        std::memcpy(&packet->ggKey, data + 3, sizeof(uint32_t));
+
+        return packet;
     };
 
     // Client side packets
@@ -195,6 +220,7 @@ void LoginHandler::init()
         auto obj = std::bit_cast<RequestLoginAuth*>(&packet);
 
         DataPtr data(new uint8_t[packet.length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
 
         uint16_t offset = 0;
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
@@ -213,6 +239,7 @@ void LoginHandler::init()
         packet.length = 0x22;
         auto obj = std::bit_cast<RequestServerLogin*>(&packet);
         DataPtr data(new uint8_t[packet.length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
 
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
         data[2] = obj->type;
@@ -226,6 +253,7 @@ void LoginHandler::init()
         packet.length = 0x22;
         auto obj = std::bit_cast<RequestServerList*>(&packet);
         DataPtr data(new uint8_t[packet.length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
 
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
         data[2] = obj->type;
@@ -238,10 +266,11 @@ void LoginHandler::init()
         packet.length = 0x2a;
         auto obj = std::bit_cast<RequestGGAuth*>(&packet);
         DataPtr data(new uint8_t[packet.length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
 
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
         data[2] = obj->type;
-        std::memcpy(data.get() + 3, &obj->sessionKey, sizeof(uint32_t));
+        std::memcpy(data.get() + 3, &obj->sessionId, sizeof(uint32_t));
         uint32_t sum = calculateChecksum(data.get(), obj->length);
         std::memcpy(data.get() + 26, &sum, sizeof(uint32_t));
 

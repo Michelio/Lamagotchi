@@ -28,13 +28,10 @@ void TcpClient::connect()
         }
 
         std::cout << "Inside connect handler\n";
-        auto connection = std::make_shared<TcpConnection>(std::move(*socket));
+        auto connection = std::make_shared<TcpConnection>(std::move(*socket), &this->m_ioContext);
         onConnectHandler(connection);
     });
-}
 
-void TcpClient::run()
-{
     m_ioContext.run();
 }
 

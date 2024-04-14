@@ -16,6 +16,7 @@ class BotSession
 public:
     using ConnectionPtr = std::shared_ptr<TcpConnection>;
     using PacketHandlerPtr = std::unique_ptr<PacketHandler>;
+
     explicit BotSession(ConnectionPtr connection, std::string_view login, std::string_view password);
 
 private:

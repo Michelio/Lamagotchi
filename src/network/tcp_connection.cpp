@@ -1,6 +1,5 @@
 #include "lamagotchi/network/tcp_connection.h"
 
-#include <iomanip>
 #include <iostream>
 
 namespace Lamagotchi
@@ -9,7 +8,8 @@ namespace Lamagotchi
 namespace Network
 {
 
-TcpConnection::TcpConnection(tcp::socket&& socket) : m_socket(std::move(socket))
+TcpConnection::TcpConnection(tcp::socket&& socket, io::io_context* context)
+    : m_socket(std::move(socket)), m_context(context)
 {
 }
 
@@ -24,16 +24,17 @@ void TcpConnection::stop()
     m_socket.close();
 }
 
-void TcpConnection::post(uint8_t* data, uint16_t length)
+void TcpConnection::post(std::shared_ptr<uint8_t[]> data, uint16_t length)
 {
     m_outcomingData.push({data, length});
+    std::cout << "Posting data.\n";
     asyncWrite();
 }
 
 void TcpConnection::asyncRead()
 {
-    io::async_read(m_socket, io::buffer(&m_incomingDataLength, sizeof(m_incomingDataLength)),
-                   [this](errorCode ec, size_t bytesReceived) {
+    io::async_read(m_socket, io::buffer(&m_incomingDataLength, sizeof(uint16_t)),
+                   [self = shared_from_this()](errorCode ec, size_t bytesReceived) {
                        if (ec)
                        {
                            std::cerr << "Failed to receive packet length. " << ec.what() << '\n';
@@ -41,14 +42,14 @@ void TcpConnection::asyncRead()
                            return;
                        }
 
-                       std::shared_ptr<uint8_t[]> data(new uint8_t[m_incomingDataLength]);
-                       std::memcpy(data.get(), &m_incomingDataLength, sizeof(m_incomingDataLength));
+                       std::shared_ptr<uint8_t[]> data(new uint8_t[self->m_incomingDataLength]);
+                       std::memcpy(data.get(), &self->m_incomingDataLength, sizeof(uint16_t));
 
-                       m_incomingDataLength -= sizeof(m_incomingDataLength);
+                       self->m_incomingDataLength -= sizeof(self->m_incomingDataLength);
 
-                       io::async_read(m_socket,
-                                      io::buffer(data.get() + sizeof(m_incomingDataLength), m_incomingDataLength),
-                                      [self = shared_from_this(), data](errorCode ec, size_t bytesReceived) {
+                       io::async_read(self->m_socket,
+                                      io::buffer(data.get() + sizeof(m_incomingDataLength), self->m_incomingDataLength),
+                                      [self, data](errorCode ec, size_t bytesReceived) {
                                           if (ec)
                                           {
                                               std::cerr << "Failed to read packet load. " << ec.what() << '\n';
@@ -71,7 +72,7 @@ void TcpConnection::asyncWrite()
 {
     auto [data, length] = m_outcomingData.pop();
 
-    io::async_write(m_socket, io::buffer(data, length),
+    io::async_write(m_socket, io::buffer(data.get(), length),
                     [self = shared_from_this()](errorCode ec, size_t bytesTransferred) {
                         if (ec)
                         {
@@ -90,27 +91,6 @@ void TcpConnection::onWrite()
     {
         asyncWrite();
     }
-}
-
-void TcpConnection::printPacket(uint8_t* const data, uint16_t length) const
-{
-    std::cout << std::hex << std::setfill('0');
-    for (int i = 0; i < length; ++i)
-    {
-        if (i % 0x10 == 0)
-        {
-            std::cout << "\n0x" << std::setw(2) << static_cast<uint32_t>(i) << " | ";
-        }
-
-        std::cout << std::setw(2) << static_cast<uint32_t>(data[i]);
-
-        if (i != 0 && (i + 1) % 4 == 0)
-            std::cout << '\t';
-
-        else
-            std::cout << ' ';
-    }
-    std::cout << '\n';
 }
 
 } // namespace Network

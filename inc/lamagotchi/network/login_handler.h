@@ -18,10 +18,10 @@ class LoginHandler : public PacketHandler
 {
 public:
     LoginHandler();
-    void setKey(std::array<uint8_t, 0x10> key);
 
     [[nodiscard]] PacketPtr deserialize(uint8_t* data) override final;
     [[nodiscard]] DataPtr serialize(Packets::Packet& packet) override final;
+    void printPacket(uint8_t* const data, uint16_t length) const;
     static void init();
 
 private:

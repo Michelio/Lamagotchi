@@ -19,7 +19,9 @@ class TcpClient
 {
 public:
     using ConnectionPtr = std::shared_ptr<TcpConnection>;
+
     explicit TcpClient(std::string_view address, const uint32_t port);
+
     void connect();
     void run();
     std::function<void(ConnectionPtr)> onConnectHandler;

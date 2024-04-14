@@ -18,7 +18,7 @@ struct RequestGGAuth : Packet
     {
     }
 
-    uint32_t sessionKey;
+    uint32_t sessionId;
 };
 
 } // namespace Packets
