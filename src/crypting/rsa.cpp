@@ -2,12 +2,16 @@
 
 #include <iostream>
 
+namespace Lamagotchi
+{
+
 namespace Crypting
 {
 
-Rsa::Rsa(std::array<uint8_t, 0x80> key) : m_key(RSA_new())
+Rsa::Rsa(std::array<uint8_t, 0x80> key) : m_data(key)
 {
-    m_n = BN_bin2bn(key.data(), 128, nullptr);
+    m_key = RSA_new();
+    m_n = BN_bin2bn(m_data.data(), 0x80, nullptr);
     m_e = BN_new();
     BN_set_word(m_e, 65537);
     RSA_set0_key(m_key, m_n, m_e, nullptr);
@@ -41,3 +45,4 @@ void Rsa::decrypt(uint8_t* data, uint16_t length)
 }
 
 } // namespace Crypting
+} // namespace Lamagotchi

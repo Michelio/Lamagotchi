@@ -3,6 +3,9 @@
 
 #include "lamagotchi/network/packets/packet.hpp"
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -11,7 +14,7 @@ namespace Packets
 
 struct PlayFail : Packet
 {
-    explicit PlayFail(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
+    explicit PlayFail(uint8_t type = 0x06, uint16_t length = 0x00) : Packet{type, length}
     {
     }
 
@@ -20,5 +23,6 @@ struct PlayFail : Packet
 
 } // namespace Packets
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // PLAY_FAIL_HPP

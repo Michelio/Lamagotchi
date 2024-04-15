@@ -20,7 +20,10 @@ set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/network/packets/login/request_login_auth.hpp
     ${INCROOT}/lamagotchi/network/packets/login/request_server_list.hpp
     ${INCROOT}/lamagotchi/network/packets/login/request_server_login.hpp
-    ${INCROOT}/lamagotchi/network/packets/login/server_list.hpp)
+    ${INCROOT}/lamagotchi/network/packets/login/server_list.hpp
+    ${INCROOT}/lamagotchi/bot_client.h
+    ${INCROOT}/lamagotchi/bot_session.h)
+
 set(PROJECT_SOURCES
     ${SRCROOT}/main.cpp
     ${SRCROOT}/ui/main_window.cpp
@@ -29,7 +32,9 @@ set(PROJECT_SOURCES
     ${SRCROOT}/network/tcp_client.cpp
     ${SRCROOT}/network/tcp_connection.cpp
     ${SRCROOT}/network/packet_handler.cpp
-    ${SRCROOT}/network/login_handler.cpp)
+    ${SRCROOT}/network/login_handler.cpp
+    ${SRCROOT}/bot_client.cpp
+    ${SRCROOT}/bot_session.cpp)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(Lamagotchi MANUAL_FINALIZATION ${PROJECT_SOURCES}

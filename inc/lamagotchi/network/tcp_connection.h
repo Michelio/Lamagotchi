@@ -5,6 +5,9 @@
 
 #include <boost/asio.hpp>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -16,24 +19,26 @@ using errorCode = boost::system::error_code;
 class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 {
 public:
-    explicit TcpConnection(tcp::socket&& socket);
+    explicit TcpConnection(tcp::socket&& socket, io::io_context* context);
     void start();
     void stop();
-    void post(uint8_t* data, uint16_t length);
+    void post(std::shared_ptr<uint8_t[]> data, uint16_t length);
+    std::function<void(uint8_t* data)> onReadHandler;
 
 private:
     void asyncRead();
     void onRead();
     void asyncWrite();
     void onWrite();
-    void printPacket(uint8_t* const data, uint16_t length) const;
 
 private:
     tcp::socket m_socket;
+    io::io_context* m_context;
     uint16_t m_incomingDataLength = 0;
-    ThreadSafeQueue<std::pair<uint8_t*, uint16_t>> m_outcomingData;
+    ThreadSafeQueue<std::pair<std::shared_ptr<uint8_t[]>, uint16_t>> m_outcomingData;
 };
 
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // TCP_CONNECTION_H

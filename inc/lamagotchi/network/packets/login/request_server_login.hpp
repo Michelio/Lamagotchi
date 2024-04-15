@@ -3,6 +3,9 @@
 
 #include "lamagotchi/network/packets/packet.hpp"
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -11,7 +14,7 @@ namespace Packets
 
 struct RequestServerLogin : Packet
 {
-    explicit RequestServerLogin(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
+    explicit RequestServerLogin(uint8_t type = 0x02, uint16_t length = 0x00) : Packet{type, length}
     {
     }
 
@@ -20,5 +23,6 @@ struct RequestServerLogin : Packet
 
 } // namespace Packets
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // REQUEST_SERVER_LOGIN_HPP

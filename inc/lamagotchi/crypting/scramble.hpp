@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <utility>
 
+namespace Lamagotchi
+{
+
 namespace Crypting
 {
 
@@ -64,5 +67,6 @@ static void unscramble(uint8_t* const data)
 }
 
 } // namespace Crypting
+} // namespace Lamagotchi
 
 #endif // SCRAMBLE_HPP

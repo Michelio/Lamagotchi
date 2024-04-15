@@ -3,6 +3,9 @@
 
 #include "lamagotchi/network/packets/packet.hpp"
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -11,7 +14,7 @@ namespace Packets
 
 struct GameguardAuth : Packet
 {
-    explicit GameguardAuth(uint8_t type, uint16_t length = 0x00) : Packet{type, length}
+    explicit GameguardAuth(uint8_t type = 0x0b, uint16_t length = 0x00) : Packet{type, length}
     {
     }
 
@@ -20,5 +23,6 @@ struct GameguardAuth : Packet
 
 } // namespace Packets
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // GAMEGUARD_AUTH_HPP

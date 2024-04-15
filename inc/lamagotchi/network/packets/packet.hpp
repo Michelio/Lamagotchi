@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -21,5 +24,6 @@ struct Packet
 
 } // namespace Packets
 } // namespace Network
+} // namespace Lamagotchi
 
 #endif // PACKET_HPP

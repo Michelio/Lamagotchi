@@ -16,24 +16,22 @@
 #include <iomanip>
 #include <iostream>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
 using namespace Packets;
 
-std::array<std::function<packetPointer(uint8_t* data, uint16_t length)>, 0xff> LoginHandler::m_parseHandler;
-std::array<std::function<dataPointer(Packets::Packet& packet)>, 0xff> LoginHandler::m_buildHandler;
+std::array<std::function<PacketPtr(uint8_t* data, uint16_t length)>, 0xff> LoginHandler::m_parseHandler;
+std::array<std::function<DataPtr(Packets::Packet& packet)>, 0xff> LoginHandler::m_buildHandler;
 
 LoginHandler::LoginHandler() : m_blowFish(Crypting::s_blowFishKey.data(), Crypting::s_blowFishKey.size())
 {
 }
 
-void LoginHandler::setKey(std::array<uint8_t, 0x10> key)
-{
-    m_blowFish.setKey(key.data(), key.size());
-}
-
-packetPointer LoginHandler::deserialize(uint8_t* data)
+PacketPtr LoginHandler::deserialize(uint8_t* data)
 {
     uint16_t length = 0;
     uint8_t type = 0xff;
@@ -43,6 +41,7 @@ packetPointer LoginHandler::deserialize(uint8_t* data)
     offset = sizeof(uint16_t);
     m_blowFish.decrypt(data, length);
     type = data[offset];
+    printPacket(data, length);
 
     if (!m_parseHandler[type])
     {
@@ -54,14 +53,15 @@ packetPointer LoginHandler::deserialize(uint8_t* data)
     auto packet = m_parseHandler[type](data, length);
     if (packet->type == 0x00)
     {
-        Crypting::scramble(std::bit_cast<Init*>(packet.get())->rsaKey.data());
+        Crypting::unscramble(std::bit_cast<Init*>(packet.get())->rsaKey.data());
         m_rsa.emplace(std::bit_cast<Init*>(packet.get())->rsaKey);
+        m_blowFish.setKey(std::bit_cast<Init*>(packet.get())->bfKey.data(), 0x10);
     }
 
     return packet;
 }
 
-dataPointer LoginHandler::serialize(Packet& packet)
+DataPtr LoginHandler::serialize(Packet& packet)
 {
     if (!m_buildHandler[packet.type])
     {
@@ -75,17 +75,24 @@ dataPointer LoginHandler::serialize(Packet& packet)
     if (packet.type == 0x00)
     {
         m_rsa->encrypt(data.get(), 0x80);
-
         auto sum = calculateChecksum(data.get(), packet.length);
         std::memcpy(data.get() + packet.length - 16, &sum, sizeof(sum));
     }
 
-    else if (packet.type == 0x02 || packet.type == 0x05)
+    else if (packet.type == 0x02)
     {
         std::memcpy(data.get() + 3, m_sessionKey1.data(), 0x08);
         auto sum = calculateChecksum(data.get(), packet.length);
         std::memcpy(data.get() + 18, &sum, sizeof(uint32_t));
     }
+
+    else if (packet.type == 0x05)
+    {
+        std::memcpy(m_sessionKey1.data(), data.get() + 3, 0x08);
+        auto sum = calculateChecksum(data.get(), packet.length);
+        std::memcpy(data.get() + 18, &sum, sizeof(uint32_t));
+    }
+    printPacket(data.get(), packet.length);
 
     m_blowFish.encrypt(data.get(), packet.length);
 
@@ -97,7 +104,7 @@ void LoginHandler::init()
     // Server side packets
     //
     // Init [00]
-    m_parseHandler[0x00] = [](uint8_t* data, uint16_t length) -> packetPointer {
+    m_parseHandler[0x00] = [](uint8_t* data, uint16_t length) -> PacketPtr {
         uint16_t i = length - 8;
         uint32_t k = *std::bit_cast<uint32_t*>(data + length - 8);
 
@@ -108,7 +115,7 @@ void LoginHandler::init()
             i -= 4;
         }
 
-        auto packet = std::make_shared<Init>(length, data[2]);
+        auto packet = std::make_shared<Init>(data[2], length);
 
         std::memcpy(&packet->sessionId, data + 3, sizeof(uint32_t));
         std::memcpy(packet->rsaKey.data(), data + 11, 0x80);
@@ -117,8 +124,8 @@ void LoginHandler::init()
     };
 
     // Login Fail [01]
-    m_parseHandler[0x01] = [](uint8_t* data, uint16_t length) -> packetPointer {
-        auto packet = std::make_shared<LoginFail>(length, data[2]);
+    m_parseHandler[0x01] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<LoginFail>(data[2], length);
 
         packet->reason = data[3];
 
@@ -126,8 +133,8 @@ void LoginHandler::init()
     };
 
     // Login Ok [03]
-    m_parseHandler[0x03] = [](uint8_t* data, uint16_t length) -> packetPointer {
-        auto packet = std::make_shared<LoginOk>(length, data[2]);
+    m_parseHandler[0x03] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<LoginOk>(data[2], length);
 
         std::memcpy(packet->sessionKey.data(), data + 3, 0x08);
 
@@ -135,8 +142,8 @@ void LoginHandler::init()
     };
 
     // Server List [04]
-    m_parseHandler[0x04] = [](uint8_t* data, uint16_t length) -> packetPointer {
-        auto packet = std::make_shared<ServerList>(length, data[2]);
+    m_parseHandler[0x04] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<ServerList>(data[2], length);
 
         packet->count = data[3];
 
@@ -161,8 +168,8 @@ void LoginHandler::init()
     };
 
     // Play Fail [06]
-    m_parseHandler[0x06] = [](uint8_t* data, uint16_t length) -> packetPointer {
-        auto packet = std::make_shared<PlayFail>(length, data[2]);
+    m_parseHandler[0x06] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<PlayFail>(data[2], length);
 
         packet->reason = data[3];
         std::memcpy(&packet->reason, data + 3, sizeof(uint32_t));
@@ -171,8 +178,8 @@ void LoginHandler::init()
     };
 
     // Play Ok [07]
-    m_parseHandler[0x07] = [](uint8_t* data, uint16_t length) -> packetPointer {
-        auto packet = std::make_shared<PlayOk>(length, data[2]);
+    m_parseHandler[0x07] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<PlayOk>(data[2], length);
 
         std::memcpy(packet->sessionKey.data(), data + 3, 0x08);
 
@@ -180,18 +187,23 @@ void LoginHandler::init()
     };
 
     // Gameguard Auth [0b]
-    m_parseHandler[0x0b] = [](uint8_t* data, uint16_t length) -> packetPointer {
-        return std::make_shared<GameguardAuth>(length, data[2]);
+    m_parseHandler[0x0b] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<GameguardAuth>(data[2], length);
+
+        std::memcpy(&packet->ggKey, data + 3, sizeof(uint32_t));
+
+        return packet;
     };
 
     // Client side packets
     //
     // Request Login Auth [00]
-    m_buildHandler[0x00] = [](Packet& packet) -> dataPointer {
+    m_buildHandler[0x00] = [](Packet& packet) -> DataPtr {
         packet.length = 0xb2;
         auto obj = std::bit_cast<RequestLoginAuth*>(&packet);
 
-        dataPointer data(new uint8_t[packet.length]);
+        DataPtr data(new uint8_t[packet.length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
 
         uint16_t offset = 0;
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
@@ -206,10 +218,11 @@ void LoginHandler::init()
     };
 
     // Request Server Login [02]
-    m_buildHandler[0x02] = [](Packet& packet) -> dataPointer {
+    m_buildHandler[0x02] = [](Packet& packet) -> DataPtr {
         packet.length = 0x22;
         auto obj = std::bit_cast<RequestServerLogin*>(&packet);
-        dataPointer data(new uint8_t[packet.length]);
+        DataPtr data(new uint8_t[packet.length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
 
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
         data[2] = obj->type;
@@ -219,26 +232,29 @@ void LoginHandler::init()
     };
 
     // Request Server List [05]
-    m_buildHandler[0x05] = [](Packet& packet) -> dataPointer {
+    m_buildHandler[0x05] = [](Packet& packet) -> DataPtr {
         packet.length = 0x22;
         auto obj = std::bit_cast<RequestServerList*>(&packet);
-        dataPointer data(new uint8_t[packet.length]);
+        DataPtr data(new uint8_t[packet.length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
 
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
         data[2] = obj->type;
+        std::memcpy(data.get() + 3, obj->sessionKey.data(), 0x08);
 
         return data;
     };
 
     // Request Gameguard Auth [07]
-    m_buildHandler[0x07] = [](Packet& packet) -> dataPointer {
+    m_buildHandler[0x07] = [](Packet& packet) -> DataPtr {
         packet.length = 0x2a;
         auto obj = std::bit_cast<RequestGGAuth*>(&packet);
-        dataPointer data(new uint8_t[packet.length]);
+        DataPtr data(new uint8_t[packet.length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
 
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
         data[2] = obj->type;
-        std::memcpy(data.get() + 3, &obj->sessionKey, sizeof(uint32_t));
+        std::memcpy(data.get() + 3, &obj->sessionId, sizeof(uint32_t));
         uint32_t sum = calculateChecksum(data.get(), obj->length);
         std::memcpy(data.get() + 26, &sum, sizeof(uint32_t));
 
@@ -247,3 +263,4 @@ void LoginHandler::init()
 }
 
 } // namespace Network
+} // namespace Lamagotchi
