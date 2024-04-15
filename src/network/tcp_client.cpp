@@ -13,7 +13,6 @@ namespace Network
 TcpClient::TcpClient(std::string_view address, const uint32_t port) : m_address(address), m_port(port)
 {
     m_endpoints = m_resolver.resolve(m_address, std::to_string(m_port));
-    std::cout << m_address << ':' << m_port << '\n';
 }
 
 void TcpClient::connect()
@@ -31,7 +30,7 @@ void TcpClient::connect()
             // TODO: handle error.
             return;
         }
-      
+
         std::cout << "Can't connect to the server. Out of time.\n";
         socket->shutdown(tcp::socket::shutdown_both);
         socket->cancel();
