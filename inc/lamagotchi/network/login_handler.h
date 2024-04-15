@@ -21,7 +21,6 @@ public:
 
     [[nodiscard]] PacketPtr deserialize(uint8_t* data) override final;
     [[nodiscard]] DataPtr serialize(Packets::Packet& packet) override final;
-    void printPacket(uint8_t* const data, uint16_t length) const;
     static void init();
 
 private:
@@ -30,7 +29,6 @@ private:
     Crypting::BlowFish m_blowFish;
     std::optional<Crypting::Rsa> m_rsa;
     std::array<uint8_t, 0x08> m_sessionKey1 = {};
-    std::array<uint8_t, 0x08> m_sessionKey2 = {};
 };
 
 } // namespace Network

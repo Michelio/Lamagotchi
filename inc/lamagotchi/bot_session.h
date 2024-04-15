@@ -24,6 +24,8 @@ private:
     ConnectionPtr m_connection;
     std::string m_login;
     std::string m_password;
+    uint32_t m_ip;
+    uint32_t m_port;
 };
 
 } // namespace Lamagotchi

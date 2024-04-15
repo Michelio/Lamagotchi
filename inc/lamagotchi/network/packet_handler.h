@@ -24,6 +24,7 @@ public:
     [[nodiscard]] static uint32_t calculateChecksum(uint8_t* data, uint16_t length);
     [[nodiscard]] virtual PacketPtr deserialize(uint8_t* data) = 0;
     [[nodiscard]] virtual DataPtr serialize(Packets::Packet& packet) = 0;
+    static void printPacket(const uint8_t* data, uint16_t length);
     virtual ~PacketHandler() = default;
 };
 

@@ -2,9 +2,12 @@
 #include "lamagotchi/network/login_handler.h"
 #include "lamagotchi/network/packets/login/gameguard_auth.hpp"
 #include "lamagotchi/network/packets/login/init.hpp"
+#include "lamagotchi/network/packets/login/login_ok.hpp"
 #include "lamagotchi/network/packets/login/request_gg_auth.hpp"
 #include "lamagotchi/network/packets/login/request_login_auth.hpp"
 #include "lamagotchi/network/packets/login/request_server_list.hpp"
+#include "lamagotchi/network/packets/login/request_server_login.hpp"
+#include "lamagotchi/network/packets/login/server_list.hpp"
 
 namespace Lamagotchi
 {
@@ -20,26 +23,38 @@ BotSession::BotSession(ConnectionPtr connection, std::string_view login, std::st
         switch (packet->type)
         {
         case 0x00: {
-            RequestGGAuth answer;
-            answer.sessionId = std::bit_cast<Init*>(packet.get())->sessionId;
-            DataPtr data = m_handler->serialize(answer);
-            m_connection->post(data, answer.length);
+            RequestGGAuth response;
+            response.sessionId = std::bit_cast<Init*>(packet.get())->sessionId;
+            DataPtr data = m_handler->serialize(response);
+            m_connection->post(data, response.length);
             break;
         }
         case 0x03: {
-            RequestServerList answer;
+            RequestServerList response;
+            response.sessionKey = std::bit_cast<LoginOk*>(packet.get())->sessionKey;
+            DataPtr data = m_handler->serialize(response);
+            m_connection->post(data, response.length);
+            break;
+        }
+        case 0x04: {
+            RequestServerLogin response;
+            response.serverId = std::bit_cast<ServerList*>(packet.get())->servers[0].id;
+            DataPtr data = m_handler->serialize(response);
+            m_connection->post(data, response.length);
+            break;
+        }
+        case 0x07: {
+            // Connect to game server;
 
-            DataPtr data = m_handler->serialize(answer);
-            m_connection->post(data, answer.length);
             break;
         }
         case 0x0b: {
-            RequestLoginAuth answer;
-            answer.login = m_login;
-            answer.password = m_password;
-            answer.ggKey = std::bit_cast<GameguardAuth*>(packet.get())->ggKey;
-            DataPtr data = m_handler->serialize(answer);
-            m_connection->post(data, answer.length);
+            RequestLoginAuth response;
+            response.login = m_login;
+            response.password = m_password;
+            response.ggKey = std::bit_cast<GameguardAuth*>(packet.get())->ggKey;
+            DataPtr data = m_handler->serialize(response);
+            m_connection->post(data, response.length);
             break;
         }
         default:

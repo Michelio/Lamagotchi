@@ -72,48 +72,31 @@ DataPtr LoginHandler::serialize(Packet& packet)
 
     auto data = m_buildHandler[packet.type](packet);
 
-    printPacket(data.get(), packet.length);
     if (packet.type == 0x00)
     {
         m_rsa->encrypt(data.get(), 0x80);
         auto sum = calculateChecksum(data.get(), packet.length);
         std::memcpy(data.get() + packet.length - 16, &sum, sizeof(sum));
-
-        std::cout << "RSAed\n";
-        printPacket(data.get(), packet.length);
     }
 
-    else if (packet.type == 0x02 || packet.type == 0x05)
+    else if (packet.type == 0x02)
     {
         std::memcpy(data.get() + 3, m_sessionKey1.data(), 0x08);
         auto sum = calculateChecksum(data.get(), packet.length);
         std::memcpy(data.get() + 18, &sum, sizeof(uint32_t));
     }
 
+    else if (packet.type == 0x05)
+    {
+        std::memcpy(m_sessionKey1.data(), data.get() + 3, 0x08);
+        auto sum = calculateChecksum(data.get(), packet.length);
+        std::memcpy(data.get() + 18, &sum, sizeof(uint32_t));
+    }
+    printPacket(data.get(), packet.length);
+
     m_blowFish.encrypt(data.get(), packet.length);
 
     return data;
-}
-
-void LoginHandler::printPacket(uint8_t* const data, uint16_t length) const
-{
-    std::cout << std::hex << std::setfill('0');
-    for (int i = 0; i < length; ++i)
-    {
-        if (i % 0x10 == 0)
-        {
-            std::cout << "\n0x" << std::setw(2) << static_cast<uint32_t>(i) << " | ";
-        }
-
-        std::cout << std::setw(2) << static_cast<uint32_t>(data[i]);
-
-        if (i != 0 && (i + 1) % 4 == 0)
-            std::cout << '\t';
-
-        else
-            std::cout << ' ';
-    }
-    std::cout << '\n';
 }
 
 void LoginHandler::init()
@@ -257,6 +240,7 @@ void LoginHandler::init()
 
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
         data[2] = obj->type;
+        std::memcpy(data.get() + 3, obj->sessionKey.data(), 0x08);
 
         return data;
     };

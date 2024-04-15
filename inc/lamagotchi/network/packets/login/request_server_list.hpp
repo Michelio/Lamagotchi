@@ -3,6 +3,8 @@
 
 #include "lamagotchi/network/packets/packet.hpp"
 
+#include <array>
+
 namespace Lamagotchi
 {
 
@@ -17,6 +19,7 @@ struct RequestServerList : Packet
     explicit RequestServerList(uint8_t type = 0x05, uint16_t length = 0x00) : Packet{type, length}
     {
     }
+    std::array<uint8_t, 0x08> sessionKey = {};
 };
 
 } // namespace Packets
