@@ -12,6 +12,7 @@
 #include "lamagotchi/network/packets/login/request_server_login.hpp"
 #include "lamagotchi/network/packets/login/server_list.hpp"
 
+#include <boost/endian.hpp>
 #include <cstring>
 #include <iomanip>
 #include <iostream>
@@ -31,6 +32,11 @@ LoginHandler::LoginHandler() : m_blowFish(Crypting::s_blowFishKey.data(), Crypti
 {
 }
 
+std::array<uint8_t, 0x08> LoginHandler::getSessionKey() const
+{
+    return m_sessionKey1;
+}
+
 PacketPtr LoginHandler::deserialize(uint8_t* data)
 {
     uint16_t length = 0;
@@ -38,9 +44,9 @@ PacketPtr LoginHandler::deserialize(uint8_t* data)
     uint16_t offset = 0;
 
     length = *std::bit_cast<uint16_t*>(data);
-    offset = sizeof(uint16_t);
+    boost::endian::little_to_native_inplace(length);
     m_blowFish.decrypt(data, length);
-    type = data[offset];
+    type = data[2];
     printPacket(data, length);
 
     if (!m_parseHandler[type])
@@ -76,6 +82,7 @@ DataPtr LoginHandler::serialize(Packet& packet)
     {
         m_rsa->encrypt(data.get(), 0x80);
         auto sum = calculateChecksum(data.get(), packet.length);
+        boost::endian::native_to_little_inplace(sum);
         std::memcpy(data.get() + packet.length - 16, &sum, sizeof(sum));
     }
 
@@ -83,6 +90,7 @@ DataPtr LoginHandler::serialize(Packet& packet)
     {
         std::memcpy(data.get() + 3, m_sessionKey1.data(), 0x08);
         auto sum = calculateChecksum(data.get(), packet.length);
+        boost::endian::native_to_little_inplace(sum);
         std::memcpy(data.get() + 18, &sum, sizeof(uint32_t));
     }
 
@@ -90,6 +98,7 @@ DataPtr LoginHandler::serialize(Packet& packet)
     {
         std::memcpy(m_sessionKey1.data(), data.get() + 3, 0x08);
         auto sum = calculateChecksum(data.get(), packet.length);
+        boost::endian::native_to_little_inplace(sum);
         std::memcpy(data.get() + 18, &sum, sizeof(uint32_t));
     }
     printPacket(data.get(), packet.length);
@@ -115,7 +124,7 @@ void LoginHandler::init()
             i -= 4;
         }
 
-        auto packet = std::make_shared<Init>(data[2], length);
+        auto packet = std::make_shared<Init>(length, data[2]);
 
         std::memcpy(&packet->sessionId, data + 3, sizeof(uint32_t));
         std::memcpy(packet->rsaKey.data(), data + 11, 0x80);
@@ -125,7 +134,7 @@ void LoginHandler::init()
 
     // Login Fail [01]
     m_parseHandler[0x01] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        auto packet = std::make_shared<LoginFail>(data[2], length);
+        auto packet = std::make_shared<LoginFail>(length, data[2]);
 
         packet->reason = data[3];
 
@@ -134,7 +143,7 @@ void LoginHandler::init()
 
     // Login Ok [03]
     m_parseHandler[0x03] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        auto packet = std::make_shared<LoginOk>(data[2], length);
+        auto packet = std::make_shared<LoginOk>(length, data[2]);
 
         std::memcpy(packet->sessionKey.data(), data + 3, 0x08);
 
@@ -143,11 +152,11 @@ void LoginHandler::init()
 
     // Server List [04]
     m_parseHandler[0x04] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        auto packet = std::make_shared<ServerList>(data[2], length);
+        auto packet = std::make_shared<ServerList>(length, data[2]);
 
         packet->count = data[3];
 
-        uint8_t i = data[3];
+        uint8_t i = packet->count;
         uint16_t offset = 5;
         while (i)
         {
@@ -155,9 +164,11 @@ void LoginHandler::init()
             offset += 1;
             uint32_t ip = 0x00;
             std::memcpy(&ip, data + offset, sizeof(uint32_t));
+            boost::endian::little_to_native_inplace(ip);
             offset += 4;
             uint32_t port = 0x00;
             std::memcpy(&port, data + offset, sizeof(uint32_t));
+            boost::endian::little_to_native_inplace(port);
             offset += 11;
 
             packet->servers.emplace_back(id, ip, port);
@@ -169,7 +180,7 @@ void LoginHandler::init()
 
     // Play Fail [06]
     m_parseHandler[0x06] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        auto packet = std::make_shared<PlayFail>(data[2], length);
+        auto packet = std::make_shared<PlayFail>(length, data[2]);
 
         packet->reason = data[3];
         std::memcpy(&packet->reason, data + 3, sizeof(uint32_t));
@@ -179,7 +190,7 @@ void LoginHandler::init()
 
     // Play Ok [07]
     m_parseHandler[0x07] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        auto packet = std::make_shared<PlayOk>(data[2], length);
+        auto packet = std::make_shared<PlayOk>(length, data[2]);
 
         std::memcpy(packet->sessionKey.data(), data + 3, 0x08);
 
@@ -188,7 +199,7 @@ void LoginHandler::init()
 
     // Gameguard Auth [0b]
     m_parseHandler[0x0b] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        auto packet = std::make_shared<GameguardAuth>(data[2], length);
+        auto packet = std::make_shared<GameguardAuth>(length, data[2]);
 
         std::memcpy(&packet->ggKey, data + 3, sizeof(uint32_t));
 
@@ -200,6 +211,7 @@ void LoginHandler::init()
     // Request Login Auth [00]
     m_buildHandler[0x00] = [](Packet& packet) -> DataPtr {
         packet.length = 0xb2;
+        boost::endian::native_to_little_inplace(packet.length);
         auto obj = std::bit_cast<RequestLoginAuth*>(&packet);
 
         DataPtr data(new uint8_t[packet.length]);
@@ -220,6 +232,7 @@ void LoginHandler::init()
     // Request Server Login [02]
     m_buildHandler[0x02] = [](Packet& packet) -> DataPtr {
         packet.length = 0x22;
+        boost::endian::native_to_little_inplace(packet.length);
         auto obj = std::bit_cast<RequestServerLogin*>(&packet);
         DataPtr data(new uint8_t[packet.length]);
         std::fill(data.get(), data.get() + packet.length, 0x00);
@@ -234,6 +247,7 @@ void LoginHandler::init()
     // Request Server List [05]
     m_buildHandler[0x05] = [](Packet& packet) -> DataPtr {
         packet.length = 0x22;
+        boost::endian::native_to_little_inplace(packet.length);
         auto obj = std::bit_cast<RequestServerList*>(&packet);
         DataPtr data(new uint8_t[packet.length]);
         std::fill(data.get(), data.get() + packet.length, 0x00);
@@ -248,6 +262,7 @@ void LoginHandler::init()
     // Request Gameguard Auth [07]
     m_buildHandler[0x07] = [](Packet& packet) -> DataPtr {
         packet.length = 0x2a;
+        boost::endian::native_to_little_inplace(packet.length);
         auto obj = std::bit_cast<RequestGGAuth*>(&packet);
         DataPtr data(new uint8_t[packet.length]);
         std::fill(data.get(), data.get() + packet.length, 0x00);

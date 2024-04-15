@@ -14,7 +14,7 @@ namespace Packets
 
 struct Packet
 {
-    explicit Packet(uint8_t type, uint16_t length = 0x00) : length(length), type(type)
+    explicit Packet(uint16_t length = 0x00, uint8_t type = 0xff) : length(length), type(type)
     {
     }
 

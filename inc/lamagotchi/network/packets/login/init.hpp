@@ -16,7 +16,7 @@ namespace Packets
 
 struct Init : Packet
 {
-    explicit Init(uint8_t type = 0x00, uint16_t length = 0x00) : Packet{type, length}
+    explicit Init(uint16_t length = 0x00, uint8_t type = 0x00) : Packet{length, type}
     {
     }
 

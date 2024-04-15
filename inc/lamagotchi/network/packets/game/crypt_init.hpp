@@ -1,5 +1,5 @@
-#ifndef LOGIN_OK_HPP
-#define LOGIN_OK_HPP
+#ifndef CRYPT_INIT_HPP
+#define CRYPT_INIT_HPP
 
 #include "lamagotchi/network/packets/packet.hpp"
 
@@ -14,17 +14,17 @@ namespace Network
 namespace Packets
 {
 
-struct LoginOk : Packet
+struct CryptInit : Packet
 {
-    explicit LoginOk(uint16_t length = 0x00, uint8_t type = 0x03) : Packet{length, type}
+    explicit CryptInit(uint16_t length = 0x1c, uint8_t type = 0x00) : Packet{length, type}
     {
     }
 
-    std::array<uint8_t, 0x08> sessionKey = {};
+    std::array<uint8_t, 0x10> key;
 };
 
 } // namespace Packets
 } // namespace Network
 } // namespace Lamagotchi
 
-#endif // LOGIN_OK_HPP
+#endif // CRYPT_INIT_HPP

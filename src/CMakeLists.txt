@@ -11,6 +11,7 @@ set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/network/tcp_connection.h
     ${INCROOT}/lamagotchi/network/packet_handler.h
     ${INCROOT}/lamagotchi/network/login_handler.h
+    ${INCROOT}/lamagotchi/network/gameplay_handler.h
     ${INCROOT}/lamagotchi/network/packets/login/gameguard_auth.hpp
     ${INCROOT}/lamagotchi/network/packets/login/init.hpp
     ${INCROOT}/lamagotchi/network/packets/login/login_fail.hpp
@@ -22,6 +23,7 @@ set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/network/packets/login/request_server_list.hpp
     ${INCROOT}/lamagotchi/network/packets/login/request_server_login.hpp
     ${INCROOT}/lamagotchi/network/packets/login/server_list.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/protocol_version.hpp
     ${INCROOT}/lamagotchi/bot_client.h
     ${INCROOT}/lamagotchi/bot_session.h)
 
@@ -36,7 +38,8 @@ set(PROJECT_SOURCES
     ${SRCROOT}/network/packet_handler.cpp
     ${SRCROOT}/network/login_handler.cpp
     ${SRCROOT}/bot_client.cpp
-    ${SRCROOT}/bot_session.cpp)
+    ${SRCROOT}/bot_session.cpp
+    ${SRCROOT}/network/gameplay_handler.cpp)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(Lamagotchi MANUAL_FINALIZATION ${PROJECT_SOURCES}

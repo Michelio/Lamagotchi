@@ -14,7 +14,7 @@ namespace Packets
 
 struct LoginFail : Packet
 {
-    LoginFail(uint8_t type = 0x01, uint16_t length = 0x00) : Packet{type, length}
+    LoginFail(uint16_t length = 0x00, uint8_t type = 0x01) : Packet{length, type}
     {
     }
 

@@ -14,7 +14,7 @@ namespace Packets
 
 struct GameguardAuth : Packet
 {
-    explicit GameguardAuth(uint8_t type = 0x0b, uint16_t length = 0x00) : Packet{type, length}
+    explicit GameguardAuth(uint16_t length = 0x22, uint8_t type = 0x0b) : Packet{length, type}
     {
     }
 
