@@ -5,6 +5,7 @@ set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/ui/main_window.h
     ${INCROOT}/lamagotchi/crypting/blow_fish.h
     ${INCROOT}/lamagotchi/crypting/rsa.h
+    ${INCROOT}/lamagotchi/crypting/xor.h
     ${INCROOT}/lamagotchi/containers/thread_safe_queue.hpp
     ${INCROOT}/lamagotchi/network/tcp_client.h
     ${INCROOT}/lamagotchi/network/tcp_connection.h
@@ -29,6 +30,7 @@ set(PROJECT_SOURCES
     ${SRCROOT}/ui/main_window.cpp
     ${SRCROOT}/crypting/blow_fish.cpp
     ${SRCROOT}/crypting/rsa.cpp
+    ${SRCROOT}/crypting/xor.cpp
     ${SRCROOT}/network/tcp_client.cpp
     ${SRCROOT}/network/tcp_connection.cpp
     ${SRCROOT}/network/packet_handler.cpp
