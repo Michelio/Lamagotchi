@@ -19,11 +19,16 @@ using errorCode = boost::system::error_code;
 class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 {
 public:
-    explicit TcpConnection(tcp::socket&& socket, io::io_context* context);
+    using DataPtr = std::shared_ptr<uint8_t[]>;
+    using ConnectionPtr = std::shared_ptr<TcpConnection>;
+
+    explicit TcpConnection(tcp::socket&& socket);
+    [[nodiscard]] tcp::socket& socket();
     void start();
     void stop();
-    void post(std::shared_ptr<uint8_t[]> data, uint16_t length);
-    std::function<void(uint8_t* data)> onReadHandler;
+    void post(DataPtr data, uint16_t length);
+    std::function<void(uint8_t*)> onReadHandler;
+    std::function<void(ConnectionPtr, uint32_t, uint32_t)> onReconnectHandler;
 
 private:
     void asyncRead();
@@ -35,7 +40,7 @@ private:
     tcp::socket m_socket;
     io::io_context* m_context;
     uint16_t m_incomingDataLength = 0;
-    ThreadSafeQueue<std::pair<std::shared_ptr<uint8_t[]>, uint16_t>> m_outcomingData;
+    ThreadSafeQueue<std::pair<DataPtr, uint16_t>> m_outcomingData;
 };
 
 } // namespace Network

@@ -1,13 +1,17 @@
 #include "lamagotchi/bot_session.h"
 #include "lamagotchi/network/login_handler.h"
+#include "lamagotchi/network/packets/game/protocol_version.hpp"
 #include "lamagotchi/network/packets/login/gameguard_auth.hpp"
 #include "lamagotchi/network/packets/login/init.hpp"
 #include "lamagotchi/network/packets/login/login_ok.hpp"
+#include "lamagotchi/network/packets/login/play_ok.hpp"
 #include "lamagotchi/network/packets/login/request_gg_auth.hpp"
 #include "lamagotchi/network/packets/login/request_login_auth.hpp"
 #include "lamagotchi/network/packets/login/request_server_list.hpp"
 #include "lamagotchi/network/packets/login/request_server_login.hpp"
 #include "lamagotchi/network/packets/login/server_list.hpp"
+
+#include <iostream>
 
 namespace Lamagotchi
 {
@@ -39,12 +43,23 @@ BotSession::BotSession(ConnectionPtr connection, std::string_view login, std::st
         case 0x04: {
             RequestServerLogin response;
             response.serverId = std::bit_cast<ServerList*>(packet.get())->servers[0].id;
+            m_ip = std::bit_cast<ServerList*>(packet.get())->servers[0].ip;
+            m_port = std::bit_cast<ServerList*>(packet.get())->servers[0].port;
             DataPtr data = m_handler->serialize(response);
             m_connection->post(data, response.length);
             break;
         }
         case 0x07: {
-            // Connect to game server;
+            // Stop socket ->
+            // -> Connect to game server ->
+            // -> Change packet handler ->
+            // -> Start async read
+            ProtocolVersion response;
+            std::array<uint8_t, 0x08> sessionKey1 = dynamic_cast<LoginHandler*>(m_handler.get())->getSessionKey();
+            std::array<uint8_t, 0x08> sessionKey2 = std::bit_cast<PlayOk*>(packet.get())->sessionKey;
+            m_connection->stop();
+            std::cout << "Disconnected from login server\n";
+            m_connection->onReconnectHandler(m_connection, m_ip, m_port);
 
             break;
         }

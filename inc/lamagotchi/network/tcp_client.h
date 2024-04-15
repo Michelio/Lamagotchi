@@ -28,6 +28,7 @@ public:
 
 private:
     io::io_context m_ioContext;
+    tcp::resolver m_resolver{m_ioContext};
     tcp::resolver::results_type m_endpoints;
     std::string m_address;
     uint32_t m_port;
