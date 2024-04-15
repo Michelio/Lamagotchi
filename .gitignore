@@ -1,5 +1,8 @@
 .cache/
 build/
+\\
+\
+'\'
 
 # Prerequisites
 *.d
