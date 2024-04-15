@@ -16,7 +16,7 @@ namespace Packets
 
 struct ProtocolVersion : Packet
 {
-    explicit ProtocolVersion(uint8_t type = 0x00, uint16_t length = 0x010b) : Packet{type, length}
+    explicit ProtocolVersion(uint16_t length = 0x010b, uint8_t type = 0x00) : Packet{length, type}
     {
     }
 

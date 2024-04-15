@@ -27,7 +27,7 @@ struct ServerList : Packet
         uint32_t port = 0x00;
     };
 
-    explicit ServerList(uint8_t type = 0x04, uint16_t length = 0x00) : Packet{type, length}
+    explicit ServerList(uint16_t length = 0x00, uint8_t type = 0x04) : Packet{length, type}
     {
     }
 
