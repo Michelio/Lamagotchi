@@ -1,6 +1,10 @@
 #include "lamagotchi/network/tcp_connection.h"
 
+<<<<<<< Updated upstream
 #include <iomanip>
+=======
+#include <boost/endian.hpp>
+>>>>>>> Stashed changes
 #include <iostream>
 
 namespace Network
@@ -8,6 +12,11 @@ namespace Network
 
 TcpConnection::TcpConnection(tcp::socket&& socket) : m_socket(std::move(socket))
 {
+}
+
+tcp::socket& TcpConnection::socket()
+{
+    return m_socket;
 }
 
 void TcpConnection::start()
@@ -42,6 +51,7 @@ void TcpConnection::asyncRead()
             std::shared_ptr<uint8_t[]> data(new uint8_t[m_incomingDataLength], std::default_delete<uint8_t[]>());
             std::memcpy(data.get(), &m_incomingDataLength, sizeof(m_incomingDataLength));
 
+<<<<<<< Updated upstream
             m_incomingDataLength -= sizeof(m_incomingDataLength);
 
             io::async_read(m_socket, io::buffer(data.get() + sizeof(m_incomingDataLength), m_incomingDataLength),
@@ -52,6 +62,20 @@ void TcpConnection::asyncRead()
                                    // TODO: handle error.
                                    return;
                                }
+=======
+                       boost::endian::little_to_native_inplace(self->m_incomingDataLength);
+                       self->m_incomingDataLength -= sizeof(uint16_t);
+
+                       io::async_read(self->m_socket,
+                                      io::buffer(data.get() + sizeof(uint16_t), self->m_incomingDataLength),
+                                      [self, data](errorCode ec, size_t bytesReceived) {
+                                          if (ec)
+                                          {
+                                              std::cerr << "Failed to read packet load. " << ec.what() << '\n';
+                                              // TODO: handle error.
+                                              return;
+                                          }
+>>>>>>> Stashed changes
 
                                self->printPacket(data.get(), self->m_incomingDataLength);
                                self->onRead();

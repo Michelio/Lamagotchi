@@ -22,6 +22,7 @@ public:
 
 private:
     io::io_context m_ioContext;
+    tcp::resolver m_resolver{m_ioContext};
     tcp::resolver::results_type m_endpoints;
     std::unordered_set<std::shared_ptr<TcpConnection>> m_connections;
     std::string m_address;
