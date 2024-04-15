@@ -3,10 +3,14 @@
 #include <QDockWidget>
 #include <QGraphicsView>
 #include <QListView>
+#include <QMenuBar>
 #include <QPushButton>
 #include <QTabWidget>
 #include <QTextEdit>
 #include <QVBoxLayout>
+
+namespace Lamagotchi
+{
 
 namespace Ui
 {
@@ -14,18 +18,20 @@ namespace Ui
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
     QTabWidget* centralTabWidget = new QTabWidget(this);
-    QTabBar* packetLogTab = new QTabBar(this);
-    QTextEdit* packetLogTextEdit = new QTextEdit(this);
-    QTabBar* mapTab = new QTabBar(this);
-    QGraphicsView* mapGraphicView = new QGraphicsView(this);
-    QListView* accountsListView = new QListView(this);
-    QPushButton* addAccountButton = new QPushButton("Add", this);
+    QTabBar* packetLogTab = new QTabBar;
+    QTextEdit* packetLogTextEdit = new QTextEdit;
+    QTabBar* mapTab = new QTabBar;
+    QGraphicsView* mapGraphicView = new QGraphicsView;
+    QListView* accountsListView = new QListView;
+    QPushButton* addAccountButton = new QPushButton("Add");
+    QMenuBar* menuBar = new QMenuBar(this);
 
     centralTabWidget->addTab(packetLogTab, "Packets Log");
     centralTabWidget->addTab(mapTab, "Map");
     centralTabWidget->setMovable(true);
 
     this->setCentralWidget(centralTabWidget);
+    this->setMenuWidget(menuBar);
 
     QDockWidget* characterInfoDock = new QDockWidget(tr("Character"), this);
     characterInfoDock->setAllowedAreas(Qt::AllDockWidgetAreas);
@@ -56,3 +62,4 @@ MainWindow::~MainWindow()
 }
 
 } // namespace Ui
+} // namespace Lamagotchi

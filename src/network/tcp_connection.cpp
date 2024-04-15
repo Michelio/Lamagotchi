@@ -1,16 +1,17 @@
 #include "lamagotchi/network/tcp_connection.h"
 
-<<<<<<< Updated upstream
 #include <iomanip>
-=======
 #include <boost/endian.hpp>
->>>>>>> Stashed changes
 #include <iostream>
+
+namespace Lamagotchi
+{
 
 namespace Network
 {
 
-TcpConnection::TcpConnection(tcp::socket&& socket) : m_socket(std::move(socket))
+TcpConnection::TcpConnection(tcp::socket&& socket, io::io_context* context)
+    : m_socket(std::move(socket)), m_context(context)
 {
 }
 
@@ -30,9 +31,10 @@ void TcpConnection::stop()
     m_socket.close();
 }
 
-void TcpConnection::post(uint8_t* data, uint16_t length)
+void TcpConnection::post(std::shared_ptr<uint8_t[]> data, uint16_t length)
 {
     m_outcomingData.push({data, length});
+    std::cout << "Posting data.\n";
     asyncWrite();
 }
 
@@ -51,7 +53,7 @@ void TcpConnection::asyncRead()
             std::shared_ptr<uint8_t[]> data(new uint8_t[m_incomingDataLength], std::default_delete<uint8_t[]>());
             std::memcpy(data.get(), &m_incomingDataLength, sizeof(m_incomingDataLength));
 
-<<<<<<< Updated upstream
+
             m_incomingDataLength -= sizeof(m_incomingDataLength);
 
             io::async_read(m_socket, io::buffer(data.get() + sizeof(m_incomingDataLength), m_incomingDataLength),
@@ -62,7 +64,6 @@ void TcpConnection::asyncRead()
                                    // TODO: handle error.
                                    return;
                                }
-=======
                        boost::endian::little_to_native_inplace(self->m_incomingDataLength);
                        self->m_incomingDataLength -= sizeof(uint16_t);
 
@@ -75,12 +76,11 @@ void TcpConnection::asyncRead()
                                               // TODO: handle error.
                                               return;
                                           }
->>>>>>> Stashed changes
 
-                               self->printPacket(data.get(), self->m_incomingDataLength);
-                               self->onRead();
-                           });
-        });
+                                          self->onReadHandler(data.get());
+                                          self->onRead();
+                                      });
+                   });
 }
 
 void TcpConnection::onRead()
@@ -92,7 +92,7 @@ void TcpConnection::asyncWrite()
 {
     auto [data, length] = m_outcomingData.pop();
 
-    io::async_write(m_socket, io::buffer(data, length),
+    io::async_write(m_socket, io::buffer(data.get(), length),
                     [self = shared_from_this()](errorCode ec, size_t bytesTransferred) {
                         if (ec)
                         {
@@ -100,32 +100,18 @@ void TcpConnection::asyncWrite()
                             // TODO: handle error.
                             return;
                         }
-                        if (!self->m_outcomingData.empty())
-                        {
-                            self->asyncWrite();
-                        }
+
+                        self->onWrite();
                     });
 }
 
-void TcpConnection::printPacket(const uint8_t* const data, uint16_t length) const
+void TcpConnection::onWrite()
 {
-    std::cout << std::hex << std::setfill('0');
-    for (int i = 0; i < length; ++i)
+    if (!m_outcomingData.empty())
     {
-        if (i % 0x10 == 0)
-        {
-            std::cout << "\n0x" << std::setw(2) << static_cast<uint32_t>(i) << " | ";
-        }
-
-        std::cout << std::setw(2) << static_cast<uint32_t>(data[i]);
-
-        if (i != 0 && (i + 1) % 4 == 0)
-            std::cout << '\t';
-
-        else
-            std::cout << ' ';
+        asyncWrite();
     }
-    std::cout << '\n';
 }
 
 } // namespace Network
+} // namespace Lamagotchi

@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+namespace Lamagotchi
+{
+
 namespace Ui
 {
 
@@ -16,5 +19,6 @@ public:
 };
 
 } // namespace Ui
+} // namespace Lamagotchi
 
 #endif // MAIN_WINDOW_H

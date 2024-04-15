@@ -4,6 +4,9 @@
 #include <boost/endian.hpp>
 #include <iostream>
 
+namespace Lamagotchi
+{
+
 namespace Network
 {
 
@@ -15,15 +18,10 @@ TcpClient::TcpClient(std::string_view address, const uint32_t port) : m_address(
 
 void TcpClient::connect()
 {
-<<<<<<< Updated upstream
-    auto t_socket = std::make_shared<tcp::socket>(m_ioContext);
-    io::async_connect(*t_socket, m_endpoints, [this, socket = t_socket](errorCode ec, tcp::endpoint ep) {
-=======
     auto socket = std::make_shared<tcp::socket>(m_ioContext);
     auto connectDeadline = std::make_shared<io::steady_timer>(m_ioContext, std::chrono::seconds{10});
 
     connectDeadline->async_wait([socket](errorCode ec) {
->>>>>>> Stashed changes
         if (ec)
         {
             if (ec != io::error::operation_aborted)
@@ -33,10 +31,7 @@ void TcpClient::connect()
             // TODO: handle error.
             return;
         }
-
-<<<<<<< Updated upstream
-        std::cout << "Connected!!!\n";
-=======
+      
         std::cout << "Can't connect to the server. Out of time.\n";
         socket->shutdown(tcp::socket::shutdown_both);
         socket->cancel();
@@ -95,17 +90,9 @@ void TcpClient::connect()
         };
         onConnectHandler(connection);
     });
->>>>>>> Stashed changes
 
-        auto connection = std::make_shared<TcpConnection>(std::move(*socket));
-        m_connections.insert(connection);
-        connection->start();
-    });
-}
-
-void TcpClient::run()
-{
     m_ioContext.run();
 }
 
 } // namespace Network
+} // namespace Lamagotchi
