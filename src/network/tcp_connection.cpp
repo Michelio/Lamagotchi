@@ -9,13 +9,13 @@ namespace Lamagotchi
 namespace Network
 {
 
-TcpConnection::TcpConnection(tcp::socket&& socket) : m_socket(std::move(socket))
+TcpConnection::TcpConnection(tcp::socket&& socket) : m_socket(new tcp::socket{std::move(socket)})
 {
 }
 
-tcp::socket& TcpConnection::socket()
+void TcpConnection::setSocket(tcp::socket&& socket)
 {
-    return m_socket;
+    m_socket.reset(new tcp::socket{std::move(socket)});
 }
 
 void TcpConnection::start()
@@ -25,25 +25,40 @@ void TcpConnection::start()
 
 void TcpConnection::stop()
 {
-    m_socket.shutdown(tcp::socket::shutdown_both);
-    m_socket.close();
+    errorCode ec;
+    m_socket->cancel();
+    m_socket->shutdown(tcp::socket::shutdown_receive, ec);
+
+    if (ec)
+    {
+        std::cerr << "Failed to shut down the socket. " << ec.message() << std::endl;
+        ec.clear();
+    }
+
+    m_socket->close(ec);
+
+    if (ec)
+    {
+        std::cerr << "Failed to close the socket. " << ec.message() << std::endl;
+        ec.clear();
+    }
 }
 
 void TcpConnection::post(std::shared_ptr<uint8_t[]> data, uint16_t length)
 {
     m_outcomingData.push({data, length});
-    std::cout << "Posting data.\n";
     asyncWrite();
 }
 
 void TcpConnection::asyncRead()
 {
-    io::async_read(m_socket, io::buffer(&m_incomingDataLength, sizeof(uint16_t)),
+    io::async_read(*m_socket, io::buffer(&m_incomingDataLength, sizeof(uint16_t)),
                    [self = shared_from_this()](errorCode ec, size_t bytesReceived) {
                        if (ec)
                        {
                            std::cout << "Failed to receive packet length. " << ec.what() << '\n';
                            // TODO: handle error.
+                           self->m_socket->close();
                            return;
                        }
 
@@ -53,13 +68,14 @@ void TcpConnection::asyncRead()
 
                        self->m_incomingDataLength -= sizeof(uint16_t);
 
-                       io::async_read(self->m_socket,
+                       io::async_read(*self->m_socket,
                                       io::buffer(data.get() + sizeof(uint16_t), self->m_incomingDataLength),
                                       [self, data](errorCode ec, size_t bytesReceived) {
                                           if (ec)
                                           {
                                               std::cerr << "Failed to read packet load. " << ec.what() << '\n';
                                               // TODO: handle error.
+                                              self->m_socket->close();
                                               return;
                                           }
 
@@ -78,12 +94,13 @@ void TcpConnection::asyncWrite()
 {
     auto [data, length] = m_outcomingData.pop();
 
-    io::async_write(m_socket, io::buffer(data.get(), length),
+    io::async_write(*m_socket, io::buffer(data.get(), length),
                     [self = shared_from_this()](errorCode ec, size_t bytesTransferred) {
                         if (ec)
                         {
                             std::cerr << "Failed to send data. " << ec.what() << '\n';
                             // TODO: handle error.
+                            self->m_socket->close();
                             return;
                         }
 

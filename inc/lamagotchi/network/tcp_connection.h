@@ -21,9 +21,10 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 public:
     using DataPtr = std::shared_ptr<uint8_t[]>;
     using ConnectionPtr = std::shared_ptr<TcpConnection>;
+    using SocketPtr = std::shared_ptr<tcp::socket>;
 
     explicit TcpConnection(tcp::socket&& socket);
-    [[nodiscard]] tcp::socket& socket();
+    void setSocket(tcp::socket&& socket);
     void start();
     void stop();
     void post(DataPtr data, uint16_t length);
@@ -37,8 +38,7 @@ private:
     void onWrite();
 
 private:
-    tcp::socket m_socket;
-    io::io_context* m_context;
+    std::shared_ptr<tcp::socket> m_socket;
     uint16_t m_incomingDataLength = 0;
     ThreadSafeQueue<std::pair<DataPtr, uint16_t>> m_outcomingData;
 };
