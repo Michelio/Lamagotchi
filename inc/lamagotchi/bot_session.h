@@ -26,6 +26,7 @@ private:
     std::string m_password;
     uint32_t m_ip;
     uint32_t m_port;
+    std::array<uint8_t, 0x10> m_sessionKey = {};
 };
 
 } // namespace Lamagotchi

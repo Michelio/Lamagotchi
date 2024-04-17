@@ -23,6 +23,17 @@ set(PROJECT_HEADERS
     ${INCROOT}/lamagotchi/network/packets/login/request_server_list.hpp
     ${INCROOT}/lamagotchi/network/packets/login/request_server_login.hpp
     ${INCROOT}/lamagotchi/network/packets/login/server_list.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/char_info.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/char_list.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/char_selected.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/crypt_init.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/move_to_location.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/npc_info.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/request_enter_world.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/request_select_char.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/request_manor_list.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/manor_list.hpp
+    ${INCROOT}/lamagotchi/network/packets/game/request_auth.hpp
     ${INCROOT}/lamagotchi/network/packets/game/protocol_version.hpp
     ${INCROOT}/lamagotchi/bot_client.h
     ${INCROOT}/lamagotchi/bot_session.h)

@@ -41,7 +41,6 @@ PacketPtr LoginHandler::deserialize(uint8_t* data)
 {
     uint16_t length = 0;
     uint8_t type = 0xff;
-    uint16_t offset = 0;
 
     length = *std::bit_cast<uint16_t*>(data);
     boost::endian::little_to_native_inplace(length);
@@ -57,7 +56,8 @@ PacketPtr LoginHandler::deserialize(uint8_t* data)
     }
 
     auto packet = m_parseHandler[type](data, length);
-    if (packet->type == 0x00)
+
+    if (packet->type == 0x00) [[unlikely]]
     {
         Crypting::unscramble(std::bit_cast<Init*>(packet.get())->rsaKey.data());
         m_rsa.emplace(std::bit_cast<Init*>(packet.get())->rsaKey);
@@ -69,7 +69,7 @@ PacketPtr LoginHandler::deserialize(uint8_t* data)
 
 DataPtr LoginHandler::serialize(Packet& packet)
 {
-    if (!m_buildHandler[packet.type])
+    if (!m_buildHandler[packet.type]) [[unlikely]]
     {
         std::cerr << std::setfill('0');
         std::cerr << "Unable to serialize " << std::hex << std::setw(2) << static_cast<uint32_t>(packet.type) << ".\n";
