@@ -1,7 +1,7 @@
 #ifndef REQUEST_SERVER_LIST_HPP
 #define REQUEST_SERVER_LIST_HPP
 
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/packets/packet.hpp"
 
 #include <array>
 

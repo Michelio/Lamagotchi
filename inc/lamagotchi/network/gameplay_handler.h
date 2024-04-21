@@ -1,9 +1,9 @@
 #ifndef GAMEPLAY_HANDLER
 #define GAMEPLAY_HANDLER
 
-#include "lamagotchi/network/packet_handler.h"
+#include "network/packet_handler.h"
 
-#include "lamagotchi/crypting/xor.h"
+#include "crypting/xor.h"
 #include <array>
 #include <functional>
 #include <optional>

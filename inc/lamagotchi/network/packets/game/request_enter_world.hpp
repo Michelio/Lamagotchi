@@ -1,7 +1,7 @@
 #ifndef REQUEST_ENTER_WORLD_HPP
 #define REQUEST_ENTER_WORLD_HPP
 
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/packets/packet.hpp"
 
 namespace Lamagotchi
 {

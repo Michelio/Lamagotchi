@@ -1,4 +1,4 @@
-#include "lamagotchi/crypting/rsa.h"
+#include "crypting/rsa.h"
 
 #include <iostream>
 

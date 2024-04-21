@@ -1,7 +1,7 @@
 #ifndef REQUEST_SELECT_CHAR_HPP
 #define REQUEST_SELECT_CHAR_HPP
 
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/packets/packet.hpp"
 
 namespace Lamagotchi
 {

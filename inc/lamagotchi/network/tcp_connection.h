@@ -1,7 +1,7 @@
 #ifndef TCP_CONNECTION_H
 #define TCP_CONNECTION_H
 
-#include <lamagotchi/containers/thread_safe_queue.hpp>
+#include <containers/thread_safe_queue.hpp>
 
 #include <boost/asio.hpp>
 

@@ -1,4 +1,4 @@
-#include "lamagotchi/crypting/xor.h"
+#include "crypting/xor.h"
 
 namespace Lamagotchi
 {

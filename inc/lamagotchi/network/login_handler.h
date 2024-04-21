@@ -1,9 +1,9 @@
 #ifndef LOGIN_HANDLER_H
 #define LOGIN_HANDLER_H
 
-#include "lamagotchi/crypting/blow_fish.h"
-#include "lamagotchi/crypting/rsa.h"
-#include "lamagotchi/network/packet_handler.h"
+#include "crypting/blow_fish.h"
+#include "crypting/rsa.h"
+#include "network/packet_handler.h"
 
 #include <functional>
 #include <optional>

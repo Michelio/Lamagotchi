@@ -1,7 +1,7 @@
 #ifndef LOGIN_FAIL_HPP
 #define LOGIN_FAIL_HPP
 
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/packets/packet.hpp"
 
 namespace Lamagotchi
 {

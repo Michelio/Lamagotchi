@@ -1,17 +1,19 @@
-#include "lamagotchi/network/gameplay_handler.h"
-#include "lamagotchi/network/packets/game/char_info.hpp"
-#include "lamagotchi/network/packets/game/char_list.hpp"
-#include "lamagotchi/network/packets/game/char_selected.hpp"
-#include "lamagotchi/network/packets/game/crypt_init.hpp"
-#include "lamagotchi/network/packets/game/manor_list.hpp"
-#include "lamagotchi/network/packets/game/move_to_location.hpp"
-#include "lamagotchi/network/packets/game/npc_info.hpp"
-#include "lamagotchi/network/packets/game/protocol_version.hpp"
-#include "lamagotchi/network/packets/game/request_auth.hpp"
-#include "lamagotchi/network/packets/game/request_enter_world.hpp"
-#include "lamagotchi/network/packets/game/request_manor_list.hpp"
-#include "lamagotchi/network/packets/game/request_select_char.hpp"
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/gameplay_handler.h"
+#include "network/packets/game/char_info.hpp"
+#include "network/packets/game/char_list.hpp"
+#include "network/packets/game/char_selected.hpp"
+#include "network/packets/game/crypt_init.hpp"
+#include "network/packets/game/ex_info.hpp"
+#include "network/packets/game/move_to_location.hpp"
+#include "network/packets/game/net_ping.hpp"
+#include "network/packets/game/npc_info.hpp"
+#include "network/packets/game/protocol_version.hpp"
+#include "network/packets/game/request_auth.hpp"
+#include "network/packets/game/request_enter_world.hpp"
+#include "network/packets/game/request_manor_list.hpp"
+#include "network/packets/game/request_net_ping.hpp"
+#include "network/packets/game/request_select_char.hpp"
+#include "network/packets/packet.hpp"
 
 #include <boost/endian.hpp>
 #include <cstring>
@@ -153,9 +155,20 @@ void GameplayHandler::init()
         return packet;
     };
 
+    // Request Net Ping [d3]
+    m_parseHandler[0xd3] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<RequestNetPing>(length);
+
+        std::memcpy(&packet->id, data + 3, sizeof(uint32_t));
+
+        return packet;
+    };
+
     // Manor List [fe]
     m_parseHandler[0xfe] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        auto packet = std::make_shared<ManorList>(length);
+        auto packet = std::make_shared<ExInfo>(length);
+
+        packet->subType = data[3];
 
         return packet;
     };
@@ -223,6 +236,22 @@ void GameplayHandler::init()
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
         data[2] = obj->type;
         std::memcpy(data.get() + 3, &obj->charNum, sizeof(uint32_t));
+
+        return data;
+    };
+
+    // Net Ping [a8]
+    m_buildHandler[0xa8] = [](Packet& packet) -> DataPtr {
+        boost::endian::native_to_little_inplace(packet.length);
+
+        auto obj = std::bit_cast<NetPing*>(&packet);
+
+        DataPtr data(new uint8_t[obj->length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
+
+        std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
+        data[2] = obj->type;
+        std::memcpy(data.get() + 3, &obj->id, sizeof(uint32_t));
 
         return data;
     };

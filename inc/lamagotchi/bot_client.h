@@ -1,8 +1,8 @@
 #ifndef BOT_CLIENT_H
 #define BOT_CLIENT_H
 
-#include "lamagotchi/bot_session.h"
-#include "lamagotchi/network/tcp_client.h"
+#include "bot_session.h"
+#include "network/tcp_client.h"
 
 #include <unordered_set>
 

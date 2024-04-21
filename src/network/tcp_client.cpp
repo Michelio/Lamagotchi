@@ -1,5 +1,5 @@
-#include "lamagotchi/network/tcp_client.h"
-#include "lamagotchi/network/tcp_connection.h"
+#include "network/tcp_client.h"
+#include "network/tcp_connection.h"
 
 #include <boost/endian.hpp>
 #include <iostream>
@@ -90,7 +90,10 @@ void TcpClient::connect()
         };
         onConnectHandler(connection);
     });
+}
 
+void TcpClient::run()
+{
     m_ioContext.run();
 }
 

@@ -1,4 +1,4 @@
-#include "lamagotchi/crypting/blow_fish.h"
+#include "crypting/blow_fish.h"
 
 #include <bit>
 

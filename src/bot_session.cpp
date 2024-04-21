@@ -1,20 +1,23 @@
-#include "lamagotchi/bot_session.h"
-#include "lamagotchi/network/gameplay_handler.h"
-#include "lamagotchi/network/login_handler.h"
-#include "lamagotchi/network/packets/game/protocol_version.hpp"
-#include "lamagotchi/network/packets/game/request_auth.hpp"
-#include "lamagotchi/network/packets/game/request_enter_world.hpp"
-#include "lamagotchi/network/packets/game/request_manor_list.hpp"
-#include "lamagotchi/network/packets/game/request_select_char.hpp"
-#include "lamagotchi/network/packets/login/gameguard_auth.hpp"
-#include "lamagotchi/network/packets/login/init.hpp"
-#include "lamagotchi/network/packets/login/login_ok.hpp"
-#include "lamagotchi/network/packets/login/play_ok.hpp"
-#include "lamagotchi/network/packets/login/request_gg_auth.hpp"
-#include "lamagotchi/network/packets/login/request_login_auth.hpp"
-#include "lamagotchi/network/packets/login/request_server_list.hpp"
-#include "lamagotchi/network/packets/login/request_server_login.hpp"
-#include "lamagotchi/network/packets/login/server_list.hpp"
+#include "bot_session.h"
+#include "network/gameplay_handler.h"
+#include "network/login_handler.h"
+#include "network/packets/game/ex_info.hpp"
+#include "network/packets/game/net_ping.hpp"
+#include "network/packets/game/protocol_version.hpp"
+#include "network/packets/game/request_auth.hpp"
+#include "network/packets/game/request_enter_world.hpp"
+#include "network/packets/game/request_manor_list.hpp"
+#include "network/packets/game/request_net_ping.hpp"
+#include "network/packets/game/request_select_char.hpp"
+#include "network/packets/login/gameguard_auth.hpp"
+#include "network/packets/login/init.hpp"
+#include "network/packets/login/login_ok.hpp"
+#include "network/packets/login/play_ok.hpp"
+#include "network/packets/login/request_gg_auth.hpp"
+#include "network/packets/login/request_login_auth.hpp"
+#include "network/packets/login/request_server_list.hpp"
+#include "network/packets/login/request_server_login.hpp"
+#include "network/packets/login/server_list.hpp"
 
 namespace Lamagotchi
 {
@@ -24,6 +27,7 @@ using namespace Network::Packets;
 BotSession::BotSession(ConnectionPtr connection, std::string_view login, std::string_view password)
     : m_connection(connection), m_login(login), m_password(password), m_handler(new LoginHandler)
 {
+    // Game Server
     auto newOnReadHandler = [this](uint8_t* data) {
         auto packet = m_handler->deserialize(data);
 
@@ -45,7 +49,7 @@ BotSession::BotSession(ConnectionPtr connection, std::string_view login, std::st
         }
         case 0x13: {
             RequestSelectChar response;
-            response.charNum = 0;
+            response.charNum = 1;
             DataPtr data = m_handler->serialize(response);
             m_connection->post(data, response.length);
             break;
@@ -56,10 +60,20 @@ BotSession::BotSession(ConnectionPtr connection, std::string_view login, std::st
             m_connection->post(data, response.length);
             break;
         }
-        case 0xfe: {
-            RequestEnterWorld response;
+        case 0xd3: {
+            NetPing response;
             DataPtr data = m_handler->serialize(response);
+            response.id = std::bit_cast<RequestNetPing*>(packet.get())->id;
             m_connection->post(data, response.length);
+            break;
+        }
+        case 0xfe: {
+            if (std::bit_cast<ExInfo*>(packet.get())->subType == 0x1b)
+            {
+                RequestEnterWorld response;
+                DataPtr data = m_handler->serialize(response);
+                m_connection->post(data, response.length);
+            }
             break;
         }
         default:
@@ -67,6 +81,7 @@ BotSession::BotSession(ConnectionPtr connection, std::string_view login, std::st
         }
     };
 
+    // Login Server
     m_connection->onReadHandler = [this, newOnReadHandler](uint8_t* data) {
         auto packet = m_handler->deserialize(data);
 

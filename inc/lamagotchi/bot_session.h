@@ -1,8 +1,8 @@
 #ifndef BOT_SESSION_H
 #define BOT_SESSION_H
 
-#include "lamagotchi/network/packet_handler.h"
-#include "lamagotchi/network/tcp_connection.h"
+#include "network/packet_handler.h"
+#include "network/tcp_connection.h"
 
 #include <memory>
 

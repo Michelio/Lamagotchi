@@ -1,7 +1,7 @@
 #ifndef PROTOCOL_VERSION_HPP
 #define PROTOCOL_VERSION_HPP
 
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/packets/packet.hpp"
 
 #include <array>
 

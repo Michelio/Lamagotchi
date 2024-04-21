@@ -1,7 +1,7 @@
 #ifndef CHAR_INFO_HPP
 #define CHAR_INFO_HPP
 
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/packets/packet.hpp"
 
 #include <string>
 

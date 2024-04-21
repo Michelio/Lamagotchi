@@ -1,7 +1,7 @@
 #ifndef LOGIN_OK_HPP
 #define LOGIN_OK_HPP
 
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/packets/packet.hpp"
 
 #include <array>
 

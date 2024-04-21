@@ -1,7 +1,7 @@
 #ifndef MOVE_TO_LOCATION_HPP
 #define MOVE_TO_LOCATION_HPP
 
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/packets/packet.hpp"
 
 namespace Lamagotchi
 {

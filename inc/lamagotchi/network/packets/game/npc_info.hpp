@@ -1,7 +1,7 @@
 #ifndef NPC_INFO_HPP
 #define NPC_INFO_HPP
 
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/packets/packet.hpp"
 
 namespace Lamagotchi
 {

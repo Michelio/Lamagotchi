@@ -1,7 +1,7 @@
 #ifndef REQUEST_GG_AUTH_HPP
 #define REQUEST_GG_AUTH_HPP
 
-#include "lamagotchi/network/packets/packet.hpp"
+#include "network/packets/packet.hpp"
 
 namespace Lamagotchi
 {

@@ -1,4 +1,4 @@
-#include "lamagotchi/network/packet_handler.h"
+#include "network/packet_handler.h"
 
 #include <bit>
 #include <iomanip>
