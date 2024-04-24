@@ -1,5 +1,6 @@
 #include "ui/main_window.h"
 #include "ui/widgets/character_info.h"
+#include "ui/widgets/login_form.h"
 
 #include <QDockWidget>
 #include <QGraphicsView>
@@ -19,16 +20,17 @@ namespace Ui
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
-    QTabWidget* centralTabWidget = new QTabWidget(this);
+    QTabWidget* centralTabWidget = new QTabWidget;
     QTabBar* packetLogTab = new QTabBar;
     QTextEdit* packetLogTextEdit = new QTextEdit;
     QTabBar* mapTab = new QTabBar;
     QGraphicsView* mapGraphicView = new QGraphicsView;
     QListView* accountsListView = new QListView;
-    QPushButton* addAccountButton = new QPushButton("Add");
-    QMenuBar* menuBar = new QMenuBar(this);
-    CharacterInfo* charInfo = new CharacterInfo{this};
-    charInfo->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    QMenuBar* menuBar = new QMenuBar;
+    CharacterInfo* characterInfo = new CharacterInfo;
+    characterInfo->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    LoginForm* loginForm = new LoginForm;
+    loginForm->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     centralTabWidget->addTab(packetLogTab, "Packets Log");
     centralTabWidget->addTab(mapTab, "Map");
@@ -37,22 +39,26 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     this->setCentralWidget(centralTabWidget);
     this->setMenuWidget(menuBar);
 
-    QDockWidget* characterInfoDock = new QDockWidget(tr("Character"), this);
-    characterInfoDock->setAllowedAreas(Qt::AllDockWidgetAreas);
-    characterInfoDock->setWidget(charInfo);
+    QDockWidget* characterInfoDock = new QDockWidget{"Character"};
+    characterInfoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    characterInfoDock->setWidget(characterInfo);
 
-    QDockWidget* inventoryDock = new QDockWidget(tr("Inventory"), this);
-    inventoryDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+    QDockWidget* inventoryDock = new QDockWidget{"Inventory"};
+    inventoryDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    QDockWidget* enemyInfoDock = new QDockWidget(tr("Enemy"), this);
-    enemyInfoDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+    QDockWidget* enemyInfoDock = new QDockWidget{"Enemy"};
+    enemyInfoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    QDockWidget* accountsListDock = new QDockWidget(tr("Accounts"), this);
-    accountsListDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+    QDockWidget* accountsListDock = new QDockWidget{"Accounts"};
+    accountsListDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+    QDockWidget* loginFormDock = new QDockWidget{};
+    loginFormDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    loginFormDock->setWidget(loginForm);
+
     QWidget* accountsWidget = new QWidget();
     QVBoxLayout* accountsLayout = new QVBoxLayout();
     accountsLayout->addWidget(accountsListView);
-    accountsLayout->addWidget(addAccountButton);
     accountsWidget->setLayout(accountsLayout);
     accountsListDock->setWidget(accountsWidget);
 
@@ -60,6 +66,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     this->addDockWidget(Qt::LeftDockWidgetArea, inventoryDock);
     this->addDockWidget(Qt::LeftDockWidgetArea, enemyInfoDock);
     this->addDockWidget(Qt::RightDockWidgetArea, accountsListDock);
+    this->addDockWidget(Qt::RightDockWidgetArea, loginFormDock);
 }
 
 MainWindow::~MainWindow()
