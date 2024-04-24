@@ -1,10 +1,12 @@
 #include "ui/main_window.h"
+#include "ui/widgets/character_info.h"
 
 #include <QDockWidget>
 #include <QGraphicsView>
 #include <QListView>
 #include <QMenuBar>
 #include <QPushButton>
+#include <QSizePolicy>
 #include <QTabWidget>
 #include <QTextEdit>
 #include <QVBoxLayout>
@@ -25,6 +27,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     QListView* accountsListView = new QListView;
     QPushButton* addAccountButton = new QPushButton("Add");
     QMenuBar* menuBar = new QMenuBar(this);
+    CharacterInfo* charInfo = new CharacterInfo{this};
+    charInfo->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     centralTabWidget->addTab(packetLogTab, "Packets Log");
     centralTabWidget->addTab(mapTab, "Map");
@@ -35,6 +39,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 
     QDockWidget* characterInfoDock = new QDockWidget(tr("Character"), this);
     characterInfoDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+    characterInfoDock->setWidget(charInfo);
 
     QDockWidget* inventoryDock = new QDockWidget(tr("Inventory"), this);
     inventoryDock->setAllowedAreas(Qt::AllDockWidgetAreas);
