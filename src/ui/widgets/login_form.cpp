@@ -45,6 +45,22 @@ LoginForm::LoginForm(QWidget* parent) : QWidget{parent}
     m_mainLayout->addWidget(m_passwordLineEdit, 4, 0, 1, 2);
     m_mainLayout->addWidget(m_loginButton, 5, 0);
     m_mainLayout->addWidget(m_saveCheckBox, 5, 1);
+
+    connect(m_loginButton, &QPushButton::clicked, this, &LoginForm::onLoginClicked);
+}
+
+void LoginForm::onLoginClicked()
+{
+    auto login = m_loginLineEdit->text();
+    auto password = m_passwordLineEdit->text();
+
+    if (login.isEmpty() || password.isEmpty())
+    {
+        // TODO: handle an error
+        return;
+    }
+
+    emit credentialsReady(login.toStdString(), password.toStdString());
 }
 
 } // namespace Ui

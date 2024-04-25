@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     QMenuBar* menuBar = new QMenuBar;
     CharacterInfo* characterInfo = new CharacterInfo;
     characterInfo->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    LoginForm* loginForm = new LoginForm;
+    loginForm = new LoginForm;
     loginForm->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     centralTabWidget->addTab(packetLogTab, "Packets Log");

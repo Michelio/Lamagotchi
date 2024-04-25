@@ -7,18 +7,24 @@ namespace Lamagotchi
 BotClient::BotClient() : m_tcpClient("192.168.88.19", 2106)
 {
     Network::LoginHandler::init();
-    m_tcpClient.onConnectHandler = [this](ConnectionPtr connection) { this->addSession(connection); };
-    // m_tcpClient.connect();
 }
 
-void BotClient::addSession(ConnectionPtr connection)
+void BotClient::addSession(ConnectionPtr connection, std::string_view login, std::string_view password)
 {
-    m_sessions.emplace(new BotSession{connection, "qweewqqweewq", "ewqqweewqqweewq!"});
+    m_sessions.emplace(new BotSession{connection, login, password});
 }
 
 void BotClient::run()
 {
     m_tcpClient.run();
+}
+
+void BotClient::onCredentialsReady(std::string login, std::string password)
+{
+    m_tcpClient.onConnectHandler = [this, login, password](ConnectionPtr connection) {
+        this->addSession(connection, login, password);
+    };
+    m_tcpClient.connect();
 }
 
 } // namespace Lamagotchi

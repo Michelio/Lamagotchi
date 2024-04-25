@@ -1,5 +1,6 @@
 #include "bot_client.h"
 #include "ui/main_window.h"
+#include "ui/widgets/login_form.h"
 
 #include <QApplication>
 #include <thread>
@@ -11,6 +12,9 @@ int main(int argc, char* argv[])
     QApplication a(argc, argv);
     Ui::MainWindow w;
     BotClient bot;
+
+    QObject::connect(w.loginForm, &Ui::LoginForm::credentialsReady, &bot, &BotClient::onCredentialsReady);
+
     std::jthread thread([&bot]() { bot.run(); });
 
     w.show();

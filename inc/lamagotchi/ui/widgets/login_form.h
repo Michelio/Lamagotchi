@@ -21,6 +21,7 @@ class LoginForm : public QWidget
 
 public:
     LoginForm(QWidget* parent = nullptr);
+    ~LoginForm() = default;
 
 private:
     QGridLayout* m_mainLayout;
@@ -31,6 +32,12 @@ private:
     QLineEdit* m_passwordLineEdit;
     QPushButton* m_loginButton;
     QCheckBox* m_saveCheckBox;
+
+signals:
+    void credentialsReady(std::string login, std::string password);
+
+private slots:
+    void onLoginClicked();
 };
 
 } // namespace Ui

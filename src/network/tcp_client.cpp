@@ -94,6 +94,7 @@ void TcpClient::connect()
 
 void TcpClient::run()
 {
+    auto work = io::make_work_guard(m_ioContext);
     m_ioContext.run();
 }
 
