@@ -9,6 +9,8 @@
 #include "network/packets/game/request_manor_list.hpp"
 #include "network/packets/game/request_net_ping.hpp"
 #include "network/packets/game/request_select_char.hpp"
+#include "network/packets/game/status_update.hpp"
+#include "network/packets/game/user_info.hpp"
 #include "network/packets/login/gameguard_auth.hpp"
 #include "network/packets/login/init.hpp"
 #include "network/packets/login/login_ok.hpp"
@@ -45,6 +47,11 @@ BotSession::BotSession(ConnectionPtr connection, std::string_view login, std::st
             response.login = wlogin;
             DataPtr data = m_handler->serialize(response);
             m_connection->post(data, response.length);
+            break;
+        }
+        case 0x04: {
+            auto ptr = std::bit_cast<UserInfo*>(packet.get());
+
             break;
         }
         case 0x13: {

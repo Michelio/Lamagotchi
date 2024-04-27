@@ -13,6 +13,8 @@
 #include "network/packets/game/request_manor_list.hpp"
 #include "network/packets/game/request_net_ping.hpp"
 #include "network/packets/game/request_select_char.hpp"
+#include "network/packets/game/status_update.hpp"
+#include "network/packets/game/user_info.hpp"
 #include "network/packets/packet.hpp"
 
 #include <boost/endian.hpp>
@@ -121,6 +123,170 @@ void GameplayHandler::init()
         std::memcpy(&packet->y, data + 7, sizeof(uint32_t));
         std::memcpy(&packet->z, data + 11, sizeof(uint32_t));
         std::memcpy(&packet->objectId, data + 19, sizeof(uint32_t));
+
+        return packet;
+    };
+
+    // User Info [04]
+    m_parseHandler[0x04] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<UserInfo>(length);
+
+        std::memcpy(&packet->x, data + 3, sizeof(uint32_t));
+        std::memcpy(&packet->y, data + 7, sizeof(uint32_t));
+        std::memcpy(&packet->z, data + 11, sizeof(uint32_t));
+        std::memcpy(&packet->objectId, data + 19, sizeof(uint32_t));
+
+        uint16_t offset = 23;
+        while (*std::bit_cast<uint16_t*>(&data[offset]) != 0x00)
+        {
+            packet->nickname += *std::bit_cast<uint16_t*>(&data[offset]);
+            offset += 2;
+        }
+        offset += 2;
+
+        offset += sizeof(uint32_t) * 3;
+        std::memcpy(&packet->level, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->level);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->exp, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->exp);
+        offset += sizeof(uint32_t) * 2;
+        std::memcpy(&packet->STR, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->STR);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->DEX, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->DEX);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->CON, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->CON);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->INT, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->INT);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->WIT, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->WIT);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->MEN, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->MEN);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->maxHP, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->maxHP);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->curHP, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->curHP);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->maxMP, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->maxMP);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->curMP, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->curMP);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->skillPoints, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->skillPoints);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->load, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->load);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->maxLoad, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->maxLoad);
+        offset += sizeof(uint32_t);
+        offset += sizeof(uint32_t) * 35 + 68;
+        std::memcpy(&packet->pAttack, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->pAttack);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->pAttackSpeed, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->pAttackSpeed);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->pDefense, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->pDefense);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->evasion, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->evasion);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->accuracy, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->accuracy);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->critical, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->critical);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->mAttack, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->mAttack);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->mAttackSpeed, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->mAttackSpeed);
+        offset += sizeof(uint32_t) * 2;
+        std::memcpy(&packet->mDefense, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->mDefense);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->pvpStatus, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->pvpStatus);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->karma, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->karma);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->speedRun, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->speedRun);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->speedWalk, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->speedWalk);
+        offset += sizeof(uint32_t);
+        offset += sizeof(uint32_t) * 18;
+
+        while (*std::bit_cast<uint16_t*>(&data[offset]) != 0x00)
+        {
+            uint16_t letter = *std::bit_cast<uint16_t*>(&data[offset]);
+            boost::endian::little_to_native_inplace(letter);
+            packet->title += letter;
+            offset += 2;
+        }
+        offset += 2;
+
+        offset += sizeof(uint32_t) * 5 + sizeof(uint16_t) + 1;
+        std::memcpy(&packet->pkCount, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->pkCount);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->pvpCount, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->pvpCount);
+        offset += sizeof(uint32_t);
+
+        uint16_t cubicCount;
+        std::memcpy(&cubicCount, data + offset, sizeof(uint16_t));
+        boost::endian::little_to_native_inplace(cubicCount);
+        offset += sizeof(uint16_t);
+        offset += sizeof(uint16_t) * cubicCount;
+        offset += sizeof(uint32_t) * 6 + sizeof(uint16_t) * 2;
+
+        std::memcpy(&packet->maxCP, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->maxCP);
+        offset += sizeof(uint32_t);
+        std::memcpy(&packet->curCP, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->curCP);
+        offset += sizeof(uint32_t);
+
+        return packet;
+    };
+
+    // Status Update [0e]
+    m_parseHandler[0x0e] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<StatusUpdate>(length);
+
+        std::memcpy(&packet->objectId, data + 3, sizeof(uint32_t));
+        std::memcpy(&packet->count, data + 7, sizeof(uint32_t));
+        packet->newValues.reserve(packet->count);
+
+        uint16_t offset = 7;
+        for (int i = 0; i < packet->count; ++i)
+        {
+            uint32_t type;
+            uint32_t value;
+
+            offset += sizeof(uint32_t);
+            std::memcpy(&type, data + offset, sizeof(uint32_t));
+            offset += sizeof(uint32_t);
+            std::memcpy(&value, data + offset, sizeof(uint32_t));
+
+            packet->newValues.emplace_back(type, value);
+        }
 
         return packet;
     };
