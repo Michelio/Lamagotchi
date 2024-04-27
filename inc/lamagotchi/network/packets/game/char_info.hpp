@@ -24,7 +24,7 @@ struct CharInfo : Packet
     uint32_t y = 0x00;
     uint32_t z = 0x00;
     uint32_t objectId = 0x00;
-    std::string name = "";
+    std::wstring name = L"";
 };
 
 } // namespace Packets

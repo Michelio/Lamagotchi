@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     QGraphicsView* mapGraphicView = new QGraphicsView;
     QListView* accountsListView = new QListView;
     QMenuBar* menuBar = new QMenuBar;
-    CharacterInfo* characterInfo = new CharacterInfo;
+    characterInfo = new CharacterInfo;
     characterInfo->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     loginForm = new LoginForm;
     loginForm->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);

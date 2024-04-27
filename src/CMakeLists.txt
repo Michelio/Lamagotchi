@@ -25,6 +25,8 @@ set(PROJECT_HEADERS
     ${INCROOT}/network/packets/login/request_server_list.hpp
     ${INCROOT}/network/packets/login/request_server_login.hpp
     ${INCROOT}/network/packets/login/server_list.hpp
+    ${INCROOT}/network/packets/game/status_update.hpp
+    ${INCROOT}/network/packets/game/user_info.hpp
     ${INCROOT}/network/packets/game/char_info.hpp
     ${INCROOT}/network/packets/game/char_list.hpp
     ${INCROOT}/network/packets/game/char_selected.hpp
