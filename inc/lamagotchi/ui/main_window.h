@@ -9,8 +9,9 @@ namespace Lamagotchi
 namespace Ui
 {
 
-class CharacterInfo;
+class SelectedCharacter;
 class LoginForm;
+class CharacterStats;
 
 class MainWindow : public QMainWindow
 {
@@ -18,8 +19,9 @@ public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
-    CharacterInfo* characterInfo;
+    SelectedCharacter* selectedCharacter;
     LoginForm* loginForm;
+    CharacterStats* characterStats;
 };
 
 } // namespace Ui

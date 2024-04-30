@@ -3,8 +3,11 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src)
 
 set(PROJECT_HEADERS
     ${INCROOT}/ui/main_window.h
-    ${INCROOT}/ui/widgets/character_info.h
-    ${INCROOT}/ui/widgets/login_form.h
+    ${INCROOT}/ui/form/selected_character.h
+    ${INCROOT}/ui/form/character_stats.h
+    ${INCROOT}/ui/form/login_form.h
+    ${INCROOT}/ui/layouts/flow_layout.h
+    ${INCROOT}/ui/layouts/flex_grid_layout.h
     ${INCROOT}/crypting/blow_fish.h
     ${INCROOT}/crypting/rsa.h
     ${INCROOT}/crypting/xor.h
@@ -47,8 +50,11 @@ set(PROJECT_HEADERS
 set(PROJECT_SOURCES
     ${SRCROOT}/main.cpp
     ${SRCROOT}/ui/main_window.cpp
-    ${SRCROOT}/ui/widgets/character_info.cpp
-    ${SRCROOT}/ui/widgets/login_form.cpp
+    ${SRCROOT}/ui/form/selected_character.cpp
+    ${SRCROOT}/ui/form/character_stats.cpp
+    ${SRCROOT}/ui/form/login_form.cpp
+    ${SRCROOT}/ui/layouts/flow_layout.cpp
+    ${SRCROOT}/ui/layouts/flex_grid_layout.cpp
     ${SRCROOT}/crypting/blow_fish.cpp
     ${SRCROOT}/crypting/rsa.cpp
     ${SRCROOT}/crypting/xor.cpp

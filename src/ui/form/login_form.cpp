@@ -1,4 +1,4 @@
-#include "ui/widgets/login_form.h"
+#include "ui/form/login_form.h"
 
 namespace Lamagotchi
 {

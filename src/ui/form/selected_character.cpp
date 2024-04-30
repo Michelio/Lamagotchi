@@ -1,4 +1,4 @@
-#include "ui/widgets/character_info.h"
+#include "ui/form/selected_character.h"
 
 #include <QSizePolicy>
 
@@ -8,7 +8,7 @@ namespace Lamagotchi
 namespace Ui
 {
 
-CharacterInfo::CharacterInfo(QWidget* parent) : QWidget{parent}
+SelectedCharacter::SelectedCharacter(QWidget* parent) : QWidget{parent}
 {
     m_mainLayout = new QGridLayout{this};
     m_nameLabel = new QLabel{"None"};

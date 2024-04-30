@@ -1,12 +1,14 @@
 #include "ui/main_window.h"
-#include "ui/widgets/character_info.h"
-#include "ui/widgets/login_form.h"
+#include "ui/form/character_stats.h"
+#include "ui/form/login_form.h"
+#include "ui/form/selected_character.h"
 
 #include <QDockWidget>
 #include <QGraphicsView>
 #include <QListView>
 #include <QMenuBar>
 #include <QPushButton>
+#include <QScrollArea>
 #include <QSizePolicy>
 #include <QTabWidget>
 #include <QTextEdit>
@@ -27,10 +29,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     QGraphicsView* mapGraphicView = new QGraphicsView;
     QListView* accountsListView = new QListView;
     QMenuBar* menuBar = new QMenuBar;
-    characterInfo = new CharacterInfo;
-    characterInfo->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    selectedCharacter = new SelectedCharacter;
+    selectedCharacter->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     loginForm = new LoginForm;
     loginForm->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    QScrollArea* characterStatsScrollArea = new QScrollArea;
+    characterStats = new CharacterStats;
+    characterStatsScrollArea->setWidget(characterStats);
+    characterStatsScrollArea->setWidgetResizable(true);
 
     centralTabWidget->addTab(packetLogTab, "Packets Log");
     centralTabWidget->addTab(mapTab, "Map");
@@ -41,10 +47,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 
     QDockWidget* characterInfoDock = new QDockWidget{"Character"};
     characterInfoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    characterInfoDock->setWidget(characterInfo);
+    characterInfoDock->setWidget(selectedCharacter);
 
     QDockWidget* inventoryDock = new QDockWidget{"Inventory"};
     inventoryDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    inventoryDock->setWidget(characterStatsScrollArea);
 
     QDockWidget* enemyInfoDock = new QDockWidget{"Enemy"};
     enemyInfoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);

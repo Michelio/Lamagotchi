@@ -1,6 +1,6 @@
 #include "bot_client.h"
+#include "ui/form/login_form.h"
 #include "ui/main_window.h"
-#include "ui/widgets/login_form.h"
 
 #include <QApplication>
 #include <thread>
