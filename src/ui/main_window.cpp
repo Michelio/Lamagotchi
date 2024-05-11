@@ -1,7 +1,7 @@
 #include "ui/main_window.h"
-#include "ui/form/character_stats.h"
-#include "ui/form/login_form.h"
-#include "ui/form/selected_character.h"
+#include "ui/widgets/character_stats.h"
+#include "ui/widgets/login_form.h"
+#include "ui/widgets/selected_character.h"
 
 #include <QDockWidget>
 #include <QGraphicsView>
@@ -33,10 +33,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     selectedCharacter->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     loginForm = new LoginForm;
     loginForm->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    QScrollArea* characterStatsScrollArea = new QScrollArea;
-    characterStats = new CharacterStats;
-    characterStatsScrollArea->setWidget(characterStats);
-    characterStatsScrollArea->setWidgetResizable(true);
 
     centralTabWidget->addTab(packetLogTab, "Packets Log");
     centralTabWidget->addTab(mapTab, "Map");
@@ -50,6 +46,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     characterInfoDock->setWidget(selectedCharacter);
 
     QDockWidget* inventoryDock = new QDockWidget{"Inventory"};
+    QScrollArea* characterStatsScrollArea = new QScrollArea{inventoryDock};
+    characterStats = new CharacterStats{inventoryDock};
+    characterStats->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    characterStatsScrollArea->setWidget(characterStats);
+    characterStatsScrollArea->setWidgetResizable(true);
+
     inventoryDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     inventoryDock->setWidget(characterStatsScrollArea);
 

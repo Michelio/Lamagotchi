@@ -14,7 +14,7 @@ class FlexGridLayout : public QLayout
     Q_OBJECT
 
 public:
-    FlexGridLayout(QWidget* parent = nullptr, int margin = 0, int spacing = 0);
+    FlexGridLayout(QWidget* parent = nullptr, int spacing = 3, int margin = 3);
     ~FlexGridLayout();
 
     void addItem(QLayoutItem* item) override;
@@ -27,10 +27,11 @@ public:
 
 private:
     QList<QLayoutItem*> itemList;
-    int minColWidth = 0;
+    QWidget* m_parent;
+    int minCellWidth = 0;
     int spacing;
-    int numRows = 1;
-    int numCols = 1;
+    int numRows;
+    int numCols;
     int margin;
 
     void updateLayout(const QRect& rect);

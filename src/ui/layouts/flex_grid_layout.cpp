@@ -1,5 +1,6 @@
 #include "ui/layouts/flex_grid_layout.h"
 
+#include <QWidget>
 #include <cmath>
 
 namespace Lamagotchi
@@ -8,9 +9,12 @@ namespace Lamagotchi
 namespace Ui
 {
 
-FlexGridLayout::FlexGridLayout(QWidget* parent, int margin, int spacing) : QLayout(parent), spacing(6), margin(margin)
+FlexGridLayout::FlexGridLayout(QWidget* parent, int spacing, int margin)
+    : QLayout(parent), m_parent(parent), spacing(spacing), margin(margin)
 {
     setContentsMargins(margin, margin, margin, margin);
+    numCols = 1;
+    numRows = itemList.count();
 }
 
 FlexGridLayout::~FlexGridLayout()
@@ -22,7 +26,7 @@ FlexGridLayout::~FlexGridLayout()
 
 void FlexGridLayout::addItem(QLayoutItem* item)
 {
-    minColWidth = std::max(minColWidth, item->minimumSize().width());
+    minCellWidth = std::max(minCellWidth, item->minimumSize().width());
     itemList.append(item);
 }
 
@@ -33,32 +37,44 @@ QSize FlexGridLayout::sizeHint() const
 
 QSize FlexGridLayout::minimumSize() const
 {
-    int width = 0;
-    int height = 0;
+    int width = numCols * (minCellWidth + spacing) + margin * 2;
+    width -= spacing;
+    int height = margin * 2;
+    int itemHeight = 0;
 
-    for (const QLayoutItem* item : itemList)
+    int count = itemList.count();
+    for (int i = 0, col = 1; i < count; ++i, ++col)
     {
-        QSize itemSize = item->minimumSize();
-        width = qMax(width, itemSize.width());
-        height = qMax(height, itemSize.height());
+        itemHeight = std::max(itemHeight, itemList.value(i)->minimumSize().height());
+
+        if (col == numCols || i == (count - 1))
+        {
+            height += itemHeight;
+            height += spacing;
+            itemHeight = 0;
+            col = 0;
+        }
     }
 
-    return QSize(width * numCols + spacing * (numCols - 1), height + margin * 2);
+    height -= spacing;
+
+    return QSize(width, height);
 }
 
 void FlexGridLayout::setGeometry(const QRect& rect)
 {
     QLayout::setGeometry(rect);
     updateLayout(rect);
+
+    if (m_parent)
+    {
+        m_parent->updateGeometry();
+    }
 }
 
 QLayoutItem* FlexGridLayout::itemAt(int index) const
 {
-    if (index >= 0 && index < itemList.size())
-    {
-        return itemList[index];
-    }
-    return nullptr;
+    return itemList.value(index);
 }
 
 QLayoutItem* FlexGridLayout::takeAt(int index)
@@ -77,49 +93,33 @@ int FlexGridLayout::count() const
 
 void FlexGridLayout::updateLayout(const QRect& rect)
 {
-    int left, top, right, bottom;
-    getContentsMargins(&left, &top, &right, &bottom);
-    auto effectiveRect = rect.adjusted(+left, +top, -right, -bottom);
-    int y = effectiveRect.y();
-
-    int availableWidth = rect.width();
-    int maxCols = availableWidth / minColWidth;
-
-    maxCols = std::max(1, maxCols);
-
+    int availableWidth = rect.width() - margin * 2;
+    numCols = (availableWidth + spacing) / (minCellWidth + spacing);
     int itemCount = itemList.size();
-    numRows = std::ceil(static_cast<double>(itemCount) / maxCols);
-    numCols = std::ceil(static_cast<double>(itemCount) / numRows);
 
-    int itemWidth = (availableWidth - spacing * (numCols - 1) - left - right) / numCols;
+    numCols = std::max(1, numCols);
+    numRows = std::ceil(static_cast<double>(itemCount) / numCols);
 
-    int i = 0;
+    int x = 0;
+    int y = rect.y() + margin;
     int lineHeight = 0;
-    for (const auto& item : std::as_const(itemList))
+
+    for (int i = 0; i < itemCount; ++i)
     {
+        QLayoutItem* item = itemList[i];
         int col = i % numCols;
-        int x = 0;
 
-        if (itemWidth > item->maximumSize().width())
-        {
-            x = effectiveRect.x() + col * (itemWidth + spacing) + itemWidth / 2 - item->maximumSize().width() / 2;
-        }
+        x = rect.x() + margin + col * (minCellWidth + spacing);
 
-        else
-        {
-            x = effectiveRect.x() + col * (itemWidth + spacing);
-        }
-
-        if (i % numCols == 0)
+        if (i % numCols == 0 && i)
         {
             y = y + lineHeight + spacing;
             lineHeight = 0;
         }
 
-        item->setGeometry(QRect{x, y, itemWidth, item->sizeHint().height()});
+        item->setGeometry(QRect{x, y, minCellWidth, item->sizeHint().height()});
 
         lineHeight = std::max(lineHeight, item->sizeHint().height());
-        ++i;
     }
 }
 

@@ -18,10 +18,8 @@ public:
     SelectedCharacter(QWidget* parent = nullptr);
 
 private:
-    QGridLayout* m_mainLayout;
     QLabel* m_nameLabel;
     QLabel* m_levelLabel;
-    QLabel* m_levelNumberLabel;
     QProgressBar* m_combatPointsBar;
     QProgressBar* m_healthPointsBar;
     QProgressBar* m_manaPointsBar;
