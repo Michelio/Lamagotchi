@@ -19,9 +19,9 @@ public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
-    SelectedCharacter* selectedCharacter;
-    LoginForm* loginForm;
-    CharacterStats* characterStats;
+    SelectedCharacter* m_selectedCharacter;
+    LoginForm* m_loginForm;
+    CharacterStats* m_characterStats;
 };
 
 } // namespace Ui
