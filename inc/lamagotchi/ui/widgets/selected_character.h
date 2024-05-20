@@ -1,5 +1,5 @@
-#ifndef CHARACTER_INFO_H
-#define CHARACTER_INFO_H
+#ifndef SELECTED_CHARACTER_H
+#define SELECTED_CHARACTER_H
 
 #include <QGridLayout>
 #include <QLabel>
@@ -12,17 +12,14 @@ namespace Lamagotchi
 namespace Ui
 {
 
-class CharacterInfo : public QWidget
+class SelectedCharacter : public QWidget
 {
-    Q_OBJECT
 public:
-    CharacterInfo(QWidget* parent = nullptr);
+    SelectedCharacter(QWidget* parent = nullptr);
 
 private:
-    QGridLayout* m_mainLayout;
     QLabel* m_nameLabel;
     QLabel* m_levelLabel;
-    QLabel* m_levelNumberLabel;
     QProgressBar* m_combatPointsBar;
     QProgressBar* m_healthPointsBar;
     QProgressBar* m_manaPointsBar;
@@ -32,4 +29,4 @@ private:
 } // namespace Ui
 } // namespace Lamagotchi
 
-#endif // CHARACTER_INFO_H
+#endif // SELECTED_CHARACTER_H

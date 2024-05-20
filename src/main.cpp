@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
     Ui::MainWindow w;
     BotClient bot;
 
-    QObject::connect(w.loginForm, &Ui::LoginForm::credentialsReady, &bot, &BotClient::onCredentialsReady);
+    QObject::connect(w.m_loginForm, &Ui::LoginForm::credentialsReady, &bot, &BotClient::onCredentialsReady);
 
     std::jthread thread([&bot]() { bot.run(); });
 

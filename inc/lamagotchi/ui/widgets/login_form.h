@@ -26,8 +26,6 @@ public:
 private:
     QGridLayout* m_mainLayout;
     QComboBox* m_accountsComboBox;
-    QLabel* m_loginLabel;
-    QLabel* m_passwordLabel;
     QLineEdit* m_loginLineEdit;
     QLineEdit* m_passwordLineEdit;
     QPushButton* m_loginButton;

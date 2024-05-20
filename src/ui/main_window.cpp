@@ -1,16 +1,13 @@
 #include "ui/main_window.h"
-#include "ui/widgets/character_info.h"
+#include "ui/widgets/character_stats.h"
 #include "ui/widgets/login_form.h"
+#include "ui/widgets/selected_character.h"
 
 #include <QDockWidget>
-#include <QGraphicsView>
-#include <QListView>
 #include <QMenuBar>
-#include <QPushButton>
+#include <QScrollArea>
 #include <QSizePolicy>
 #include <QTabWidget>
-#include <QTextEdit>
-#include <QVBoxLayout>
 
 namespace Lamagotchi
 {
@@ -20,53 +17,68 @@ namespace Ui
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
-    QTabWidget* centralTabWidget = new QTabWidget;
-    QTabBar* packetLogTab = new QTabBar;
-    QTextEdit* packetLogTextEdit = new QTextEdit;
-    QTabBar* mapTab = new QTabBar;
-    QGraphicsView* mapGraphicView = new QGraphicsView;
-    QListView* accountsListView = new QListView;
-    QMenuBar* menuBar = new QMenuBar;
-    characterInfo = new CharacterInfo;
-    characterInfo->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    loginForm = new LoginForm;
-    loginForm->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    QTabWidget* centralTabWidget = new QTabWidget{this};
+    QTabBar* packetLogTab = new QTabBar{this};
+    QTabBar* mapTab = new QTabBar{this};
+    QMenuBar* menuBar = new QMenuBar{this};
 
     centralTabWidget->addTab(packetLogTab, "Packets Log");
     centralTabWidget->addTab(mapTab, "Map");
     centralTabWidget->setMovable(true);
 
-    this->setCentralWidget(centralTabWidget);
-    this->setMenuWidget(menuBar);
+    setCentralWidget(centralTabWidget);
+    setMenuWidget(menuBar);
 
-    QDockWidget* characterInfoDock = new QDockWidget{"Character"};
+    QDockWidget* characterInfoDock = new QDockWidget{"Character", this};
+    m_selectedCharacter = new SelectedCharacter{characterInfoDock};
+    m_selectedCharacter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    characterInfoDock->setWidget(m_selectedCharacter);
     characterInfoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    characterInfoDock->setWidget(characterInfo);
+    characterInfoDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable |
+                                   QDockWidget::DockWidgetClosable);
+    addDockWidget(Qt::LeftDockWidgetArea, characterInfoDock);
 
-    QDockWidget* inventoryDock = new QDockWidget{"Inventory"};
+    QDockWidget* characterStatsDock = new QDockWidget{"Status", this};
+    m_characterStats = new CharacterStats{characterStatsDock};
+    m_characterStats->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    QScrollArea* characterStatsScrollArea = new QScrollArea{characterStatsDock};
+    characterStatsScrollArea->setWidget(m_characterStats);
+    characterStatsScrollArea->setWidgetResizable(true);
+
+    characterStatsDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    characterStatsDock->setWidget(characterStatsScrollArea);
+    characterStatsDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable |
+                                    QDockWidget::DockWidgetClosable);
+    addDockWidget(Qt::LeftDockWidgetArea, characterStatsDock);
+
+    QDockWidget* inventoryDock = new QDockWidget{"Inventory", this};
     inventoryDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    inventoryDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable |
+                               QDockWidget::DockWidgetClosable);
+    addDockWidget(Qt::LeftDockWidgetArea, inventoryDock);
 
-    QDockWidget* enemyInfoDock = new QDockWidget{"Enemy"};
+    QMainWindow::tabifyDockWidget(inventoryDock, characterStatsDock);
+
+    QDockWidget* enemyInfoDock = new QDockWidget{"Enemy", this};
     enemyInfoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    enemyInfoDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable |
+                               QDockWidget::DockWidgetClosable);
+    addDockWidget(Qt::LeftDockWidgetArea, enemyInfoDock);
 
-    QDockWidget* accountsListDock = new QDockWidget{"Accounts"};
+    QDockWidget* accountsListDock = new QDockWidget{"Accounts", this};
     accountsListDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    accountsListDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable |
+                                  QDockWidget::DockWidgetClosable);
+    addDockWidget(Qt::RightDockWidgetArea, accountsListDock);
 
-    QDockWidget* loginFormDock = new QDockWidget{};
+    QDockWidget* loginFormDock = new QDockWidget{this};
+    m_loginForm = new LoginForm{loginFormDock};
+    m_loginForm->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    loginFormDock->setWidget(m_loginForm);
     loginFormDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    loginFormDock->setWidget(loginForm);
-
-    QWidget* accountsWidget = new QWidget();
-    QVBoxLayout* accountsLayout = new QVBoxLayout();
-    accountsLayout->addWidget(accountsListView);
-    accountsWidget->setLayout(accountsLayout);
-    accountsListDock->setWidget(accountsWidget);
-
-    this->addDockWidget(Qt::LeftDockWidgetArea, characterInfoDock);
-    this->addDockWidget(Qt::LeftDockWidgetArea, inventoryDock);
-    this->addDockWidget(Qt::LeftDockWidgetArea, enemyInfoDock);
-    this->addDockWidget(Qt::RightDockWidgetArea, accountsListDock);
-    this->addDockWidget(Qt::RightDockWidgetArea, loginFormDock);
+    loginFormDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable |
+                               QDockWidget::DockWidgetClosable);
+    addDockWidget(Qt::RightDockWidgetArea, loginFormDock);
 }
 
 MainWindow::~MainWindow()
