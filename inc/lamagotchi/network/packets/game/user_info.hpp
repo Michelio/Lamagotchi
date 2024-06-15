@@ -2,6 +2,7 @@
 #define USER_INFO_HPP
 
 #include "network/packets/packet.hpp"
+
 #include <string>
 
 namespace Lamagotchi
@@ -15,7 +16,7 @@ namespace Packets
 
 struct UserInfo : Packet
 {
-    explicit UserInfo(uint16_t length, uint8_t type = 0x04) : Packet{length, type}
+    explicit UserInfo(uint16_t length, uint8_t type = 0x32) : Packet{length, type}
     {
     }
 
@@ -24,6 +25,7 @@ struct UserInfo : Packet
     uint32_t z = 0x00;
     uint32_t objectId = 0x00;
     std::wstring nickname = L"";
+    std::wstring title = L"";
     uint32_t level = 0x00;
     uint32_t exp = 0x00;
     uint32_t STR = 0x00;
@@ -56,7 +58,6 @@ struct UserInfo : Packet
     uint32_t pkCount = 0x00;
     uint32_t speedRun = 0x00;
     uint32_t speedWalk = 0x00;
-    std::wstring title = L"";
 };
 
 } // namespace Packets

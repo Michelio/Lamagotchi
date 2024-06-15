@@ -1,4 +1,5 @@
 #include "network/gameplay_handler.h"
+#include "network/packet_handler.h"
 #include "network/packets/game/char_info.hpp"
 #include "network/packets/game/char_list.hpp"
 #include "network/packets/game/char_selected.hpp"
@@ -18,6 +19,7 @@
 #include "network/packets/packet.hpp"
 
 #include <boost/endian.hpp>
+#include <cstdint>
 #include <cstring>
 #include <iomanip>
 #include <iostream>
@@ -57,8 +59,9 @@ PacketPtr GameplayHandler::deserialize(uint8_t* data)
     }
 
     auto packet = m_parseHandler[type](data, length);
-
-    if (packet->type == 0x00)
+    // Interlude
+    // if (packet->type == 0x00)
+    if (packet->type == 0x2e)
     {
         m_xor.emplace(std::bit_cast<CryptInit*>(packet.get())->key);
     }
@@ -91,15 +94,6 @@ void GameplayHandler::init()
 {
     // Server side packets
     //
-    // Crypt Init [00]
-    m_parseHandler[0x00] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        auto packet = std::make_shared<CryptInit>(length);
-
-        std::memcpy(packet->key.data(), data + 4, 0x10);
-
-        return packet;
-    };
-
     // Move To Location [01]
     m_parseHandler[0x01] = [](uint8_t* data, uint16_t length) -> PacketPtr {
         auto packet = std::make_shared<MoveToLocation>(length);
@@ -127,9 +121,9 @@ void GameplayHandler::init()
         return packet;
     };
 
-    // User Info [04]
-    m_parseHandler[0x04] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        auto packet = std::make_shared<UserInfo>(length);
+    // User Info [32]
+    m_parseHandler[0x32] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<UserInfo>(length, 0x32);
 
         std::memcpy(&packet->x, data + 3, sizeof(uint32_t));
         std::memcpy(&packet->y, data + 7, sizeof(uint32_t));
@@ -266,7 +260,22 @@ void GameplayHandler::init()
         return packet;
     };
 
-    // Status Update [0e]
+    // Char List [09]
+    m_parseHandler[0x09] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<CharList>(length, 0x09);
+
+        std::memcpy(&packet->count, data + 3, sizeof(uint32_t));
+
+        return packet;
+    };
+    
+    // Char Selected [0b]
+    m_parseHandler[0x0b] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<CharSelected>(length, 0x0b);
+
+        return packet;
+    };
+
     m_parseHandler[0x0e] = [](uint8_t* data, uint16_t length) -> PacketPtr {
         auto packet = std::make_shared<StatusUpdate>(length);
 
@@ -291,18 +300,10 @@ void GameplayHandler::init()
         return packet;
     };
 
-    // Char List [13]
-    m_parseHandler[0x13] = [](uint8_t* data, uint16_t length) -> PacketPtr {
-        auto packet = std::make_shared<CharList>(length);
-
-        std::memcpy(&packet->count, data + 3, sizeof(uint32_t));
-
-        return packet;
-    };
-
-    // Char Selected [15]
-    m_parseHandler[0x15] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+    // Request Game Start [12]
+    m_parseHandler[0x12] = [](uint8_t* data, uint16_t length) -> PacketPtr {
         auto packet = std::make_shared<CharSelected>(length);
+        std::cout << "0x12\n";
 
         return packet;
     };
@@ -317,6 +318,15 @@ void GameplayHandler::init()
         std::memcpy(&packet->x, data + 15, sizeof(uint32_t));
         std::memcpy(&packet->y, data + 19, sizeof(uint32_t));
         std::memcpy(&packet->z, data + 23, sizeof(uint32_t));
+
+        return packet;
+    };
+
+    // Crypt Init [2e]
+    m_parseHandler[0x2e] = [](uint8_t* data, uint16_t length) -> PacketPtr {
+        auto packet = std::make_shared<CryptInit>(length, 0x2e);
+
+        std::memcpy(packet->key.data(), data + 4, 0x10);
 
         return packet;
     };
@@ -356,21 +366,6 @@ void GameplayHandler::init()
         return data;
     };
 
-    // Request Enter World [03]
-    m_buildHandler[0x03] = [](Packet& packet) -> DataPtr {
-        boost::endian::native_to_little_inplace(packet.length);
-
-        auto obj = std::bit_cast<RequestEnterWorld*>(&packet);
-
-        DataPtr data(new uint8_t[obj->length]);
-        std::fill(data.get(), data.get() + packet.length, 0x00);
-
-        std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
-        data[2] = obj->type;
-
-        return data;
-    };
-
     // Request Auth [08]
     m_buildHandler[0x08] = [](Packet& packet) -> DataPtr {
         boost::endian::native_to_little_inplace(packet.length);
@@ -390,8 +385,23 @@ void GameplayHandler::init()
         return data;
     };
 
-    // Request Select Char [0d]
-    m_buildHandler[0x0d] = [](Packet& packet) -> DataPtr {
+    // Request Enter World [11]
+    m_buildHandler[0x11] = [](Packet& packet) -> DataPtr {
+        boost::endian::native_to_little_inplace(packet.length);
+
+        auto obj = std::bit_cast<RequestEnterWorld*>(&packet);
+
+        DataPtr data(new uint8_t[obj->length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
+
+        std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
+        data[2] = obj->type;
+
+        return data;
+    };
+
+    // Request Select Char [12]
+    m_buildHandler[0x12] = [](Packet& packet) -> DataPtr {
         boost::endian::native_to_little_inplace(packet.length);
 
         auto obj = std::bit_cast<RequestSelectChar*>(&packet);
@@ -402,6 +412,29 @@ void GameplayHandler::init()
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
         data[2] = obj->type;
         std::memcpy(data.get() + 3, &obj->charNum, sizeof(uint32_t));
+
+        return data;
+    };
+
+    // Request Auth Login [2b]
+    m_buildHandler[0x2b] = [](Packet& packet) -> DataPtr {
+        boost::endian::native_to_little_inplace(packet.length);
+
+        auto obj = std::bit_cast<RequestAuth*>(&packet);
+
+        DataPtr data(new uint8_t[obj->length]);
+        std::fill(data.get(), data.get() + packet.length, 0x00);
+
+        std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
+        data[2] = obj->type;
+        std::memcpy(data.get() + 3, obj->login.data(), obj->login.size());
+        std::memcpy(data.get() + obj->login.size() + 5, obj->sessionKey.data(), 0x10);
+        uint16_t offset = obj->login.size() + obj->sessionKey.size() + 5;
+        data[offset] = 0x01;
+        offset += 4;
+        data[offset] = 0xc2;
+        offset += 1;
+        data[offset] = 0x02;
 
         return data;
     };
@@ -433,7 +466,7 @@ void GameplayHandler::init()
 
         std::memcpy(data.get(), &obj->length, sizeof(uint16_t));
         data[2] = obj->type;
-        data[3] = 0x08;
+        data[3] = 0x01;
 
         return data;
     };

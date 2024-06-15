@@ -16,7 +16,7 @@ namespace Packets
 
 struct CharInfo : Packet
 {
-    explicit CharInfo(uint16_t length, uint8_t type = 0x03) : Packet{length, type}
+    explicit CharInfo(uint16_t length, uint8_t type = 0x31) : Packet{length, type}
     {
     }
 
@@ -24,7 +24,7 @@ struct CharInfo : Packet
     uint32_t y = 0x00;
     uint32_t z = 0x00;
     uint32_t objectId = 0x00;
-    std::wstring name = L"";
+    std::wstring nickname = L"";
 };
 
 } // namespace Packets
