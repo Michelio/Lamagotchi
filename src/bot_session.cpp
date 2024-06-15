@@ -1,6 +1,7 @@
 #include "bot_session.h"
 #include "network/gameplay_handler.h"
 #include "network/login_handler.h"
+#include "network/packets/game/char_info.hpp"
 #include "network/packets/game/ex_info.hpp"
 #include "network/packets/game/net_ping.hpp"
 #include "network/packets/game/protocol_version.hpp"
@@ -20,6 +21,8 @@
 #include "network/packets/login/request_server_list.hpp"
 #include "network/packets/login/request_server_login.hpp"
 #include "network/packets/login/server_list.hpp"
+
+#include <iostream>
 
 namespace Lamagotchi
 {
@@ -54,19 +57,39 @@ BotSession::BotSession(ConnectionPtr connection, std::string_view login, std::st
 
             break;
         }
-        case 0x13: {
-            RequestSelectChar response;
+        case 0x09: {
+            RequestSelectChar response{0x15, 0x12};
             response.charNum = 1;
             DataPtr data = m_handler->serialize(response);
             m_connection->post(data, response.length);
             break;
         }
-        case 0x15: {
+        case 0x0b: {
             RequestManorList response;
+
+            DataPtr data = m_handler->serialize(response);
+            m_connection->post(data, response.length);
+
+            break;
+        }
+        case 0x2e: {
+            uint16_t length = 3 + m_login.size() * 2 + m_sessionKey.size() + 18;
+            RequestAuth response{length, 0x2b};
+            response.sessionKey = m_sessionKey;
+            std::vector<uint8_t> wlogin(m_login.size() * 2);
+            for (uint16_t i = 0; i < m_login.size(); ++i)
+            {
+                *std::bit_cast<uint16_t*>(&wlogin[i * 2]) = m_login[i];
+            }
+            response.login = wlogin;
             DataPtr data = m_handler->serialize(response);
             m_connection->post(data, response.length);
             break;
-        }
+            }
+        case 0x32: {
+            std::wcout << "Name: " << std::bit_cast<UserInfo*>(packet.get())->nickname << '\n';
+            break;
+            }
         case 0xd3: {
             NetPing response;
             DataPtr data = m_handler->serialize(response);
@@ -75,9 +98,9 @@ BotSession::BotSession(ConnectionPtr connection, std::string_view login, std::st
             break;
         }
         case 0xfe: {
-            if (std::bit_cast<ExInfo*>(packet.get())->subType == 0x1b)
+            if (std::bit_cast<ExInfo*>(packet.get())->subType == 0x22)
             {
-                RequestEnterWorld response;
+                RequestEnterWorld response{0x6b, 0x11};
                 DataPtr data = m_handler->serialize(response);
                 m_connection->post(data, response.length);
             }

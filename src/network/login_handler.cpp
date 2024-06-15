@@ -128,7 +128,7 @@ void LoginHandler::init()
 
         std::memcpy(&packet->sessionId, data + 3, sizeof(uint32_t));
         std::memcpy(packet->rsaKey.data(), data + 11, 0x80);
-        std::memcpy(packet->bfKey.data(), data + length - 31, 0x10);
+        std::memcpy(packet->bfKey.data(), data + length - 39, 0x10);
         return packet;
     };
 

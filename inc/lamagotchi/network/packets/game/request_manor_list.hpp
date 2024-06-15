@@ -2,6 +2,7 @@
 #define REQUEST_MANOR_LIST_HPP
 
 #include "network/packets/packet.hpp"
+#include <cstdint>
 
 namespace Lamagotchi
 {

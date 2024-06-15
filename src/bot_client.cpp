@@ -4,7 +4,7 @@
 namespace Lamagotchi
 {
 
-BotClient::BotClient() : m_tcpClient("192.168.88.19", 2106)
+BotClient::BotClient() : m_tcpClient("149.56.28.81", 2106)
 {
     Network::LoginHandler::init();
 }
