@@ -2,6 +2,7 @@
 #include "ui/widgets/character_stats.h"
 #include "ui/widgets/login_form.h"
 #include "ui/widgets/selected_character.h"
+#include "ui/widgets/selected_enemy.h"
 
 #include <QDockWidget>
 #include <QMenuBar>
@@ -60,6 +61,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     QMainWindow::tabifyDockWidget(inventoryDock, characterStatsDock);
 
     QDockWidget* enemyInfoDock = new QDockWidget{"Enemy", this};
+    m_selectedEnemy = new SelectedEnemy{enemyInfoDock};
+    m_selectedEnemy->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    enemyInfoDock->setWidget(m_selectedEnemy);
     enemyInfoDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     enemyInfoDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable |
                                QDockWidget::DockWidgetClosable);

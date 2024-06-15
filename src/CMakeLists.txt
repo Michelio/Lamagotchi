@@ -4,6 +4,7 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src)
 set(PROJECT_HEADERS
     ${INCROOT}/ui/main_window.h
     ${INCROOT}/ui/widgets/selected_character.h
+    ${INCROOT}/ui/widgets/selected_enemy.h
     ${INCROOT}/ui/widgets/character_stats.h
     ${INCROOT}/ui/widgets/login_form.h
     ${INCROOT}/ui/layouts/flow_layout.h
@@ -51,6 +52,7 @@ set(PROJECT_SOURCES
     ${SRCROOT}/main.cpp
     ${SRCROOT}/ui/main_window.cpp
     ${SRCROOT}/ui/widgets/selected_character.cpp
+    ${SRCROOT}/ui/widgets/selected_enemy.cpp
     ${SRCROOT}/ui/widgets/character_stats.cpp
     ${SRCROOT}/ui/widgets/login_form.cpp
     ${SRCROOT}/ui/layouts/flow_layout.cpp

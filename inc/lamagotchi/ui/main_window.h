@@ -10,16 +10,18 @@ namespace Ui
 {
 
 class SelectedCharacter;
+class SelectedEnemy;
 class LoginForm;
 class CharacterStats;
 
 class MainWindow : public QMainWindow
 {
-public:
+  public:
     MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
     SelectedCharacter* m_selectedCharacter;
+    SelectedEnemy* m_selectedEnemy;
     LoginForm* m_loginForm;
     CharacterStats* m_characterStats;
 };
