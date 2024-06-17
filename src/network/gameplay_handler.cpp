@@ -268,7 +268,7 @@ void GameplayHandler::init()
 
         return packet;
     };
-    
+
     // Char Selected [0b]
     m_parseHandler[0x0b] = [](uint8_t* data, uint16_t length) -> PacketPtr {
         auto packet = std::make_shared<CharSelected>(length, 0x0b);

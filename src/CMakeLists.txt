@@ -13,6 +13,13 @@ set(PROJECT_HEADERS
     ${INCROOT}/crypting/rsa.h
     ${INCROOT}/crypting/xor.h
     ${INCROOT}/containers/thread_safe_queue.hpp
+    ${INCROOT}/game/entities/object.h
+    ${INCROOT}/game/entities/entity.h
+    ${INCROOT}/game/entities/live_entity.h
+    ${INCROOT}/game/entities/character.h
+    ${INCROOT}/game/entities/user.h
+    ${INCROOT}/game/entities/nonplayer_character.h
+    ${INCROOT}/game/entities/pet.h
     ${INCROOT}/network/tcp_client.h
     ${INCROOT}/network/tcp_connection.h
     ${INCROOT}/network/packet_handler.h
@@ -60,13 +67,20 @@ set(PROJECT_SOURCES
     ${SRCROOT}/crypting/blow_fish.cpp
     ${SRCROOT}/crypting/rsa.cpp
     ${SRCROOT}/crypting/xor.cpp
+    ${SRCROOT}/game/entities/object.cpp
+    ${SRCROOT}/game/entities/entity.cpp
+    ${SRCROOT}/game/entities/live_entity.cpp
+    ${SRCROOT}/game/entities/character.cpp
+    ${SRCROOT}/game/entities/user.cpp
+    ${SRCROOT}/game/entities/nonplayer_character.cpp
+    ${SRCROOT}/game/entities/pet.cpp
     ${SRCROOT}/network/tcp_client.cpp
     ${SRCROOT}/network/tcp_connection.cpp
     ${SRCROOT}/network/packet_handler.cpp
     ${SRCROOT}/network/login_handler.cpp
+    ${SRCROOT}/network/gameplay_handler.cpp
     ${SRCROOT}/bot_client.cpp
-    ${SRCROOT}/bot_session.cpp
-    ${SRCROOT}/network/gameplay_handler.cpp)
+    ${SRCROOT}/bot_session.cpp)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(Lamagotchi MANUAL_FINALIZATION ${PROJECT_SOURCES}
