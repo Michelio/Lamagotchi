@@ -2,9 +2,6 @@
 #define LIVE_ENTITY_H
 
 #include "entity.h"
-#include <cstdint>
-#include <string_view>
-#include <sys/types.h>
 
 namespace Game
 {

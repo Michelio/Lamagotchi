@@ -1,10 +1,7 @@
 #ifndef NONPLAYER_CHARACTER_H
 #define NONPLAYER_CHARACTER_H
 
-#include "game/entities/entity.h"
 #include "live_entity.h"
-#include <cstdint>
-#include <string_view>
 
 namespace Game
 {

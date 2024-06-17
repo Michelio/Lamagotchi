@@ -1,7 +1,4 @@
 #include "game/entities/live_entity.h"
-#include <cmath>
-#include <cstdint>
-#include <sys/stat.h>
 
 namespace Game
 {

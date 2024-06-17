@@ -1,7 +1,4 @@
 #include "game/entities/pet.h"
-#include "game/entities/entity.h"
-#include <cstdint>
-#include <string_view>
 
 namespace Game
 {

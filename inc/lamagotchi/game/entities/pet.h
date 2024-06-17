@@ -1,11 +1,7 @@
 #ifndef PET_H
 #define PET_H
 
-#include "game/entities/entity.h"
 #include "nonplayer_character.h"
-
-#include <cstdint>
-#include <string_view>
 
 namespace Game
 {

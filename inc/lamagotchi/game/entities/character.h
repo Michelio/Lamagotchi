@@ -1,10 +1,7 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-#include "game/entities/entity.h"
-#include "game/entities/live_entity.h"
-#include <cstdint>
-#include <string_view>
+#include "live_entity.h"
 
 namespace Game
 {

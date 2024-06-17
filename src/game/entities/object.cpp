@@ -1,15 +1,10 @@
 #include "game/entities/object.h"
 
-#include <cstdint>
-#include <string>
-#include <string_view>
-
-namespace Game 
+namespace Game
 {
 
 Object::Object(const uint32_t objectId, std::wstring_view objectName) : m_objectId{objectId}, m_objectName{objectName}
 {
-
 }
 
 uint32_t Object::getObjectId() const
@@ -32,4 +27,4 @@ void Object::setObjectName(const std::wstring_view objectName)
     m_objectName = objectName;
 }
 
-}
+} // namespace Game

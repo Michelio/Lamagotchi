@@ -1,10 +1,7 @@
 #ifndef USER_H
 #define USER_H
 
-#include "game/entities/character.h"
-#include <cstdint>
-#include <string_view>
-#include <sys/types.h>
+#include "character.h"
 
 namespace Game
 {

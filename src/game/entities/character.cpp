@@ -1,6 +1,4 @@
 #include "game/entities/character.h"
-#include "game/entities/live_entity.h"
-#include <cstdint>
 
 namespace Game
 {
