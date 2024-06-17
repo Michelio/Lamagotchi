@@ -13,7 +13,7 @@ class Object
 public:
     Object() = default;
     explicit Object(const uint32_t objectId, std::wstring_view objectName);
-    virtual ~Object();
+    virtual ~Object() = default;
 
     uint32_t getObjectId() const;
     void setObjectId(const uint32_t objectId);

@@ -11,7 +11,8 @@ namespace Game
 struct Vector2D
 {
 public:
-    explicit Vector2D(float x = 0.0f, float y = 0.0f);
+    Vector2D() = default;
+    explicit Vector2D(float x, float y);
 
 public:
     float x = 0;
@@ -21,7 +22,8 @@ public:
 struct Vector3D : Vector2D
 {
 public:
-    explicit Vector3D(float x = 0.0f, float y = 0.0f, float z = 0.0f);
+    Vector3D() = default;
+    explicit Vector3D(float x, float y, float z);
 
 public:
     float z = 0;
