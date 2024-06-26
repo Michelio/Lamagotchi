@@ -136,15 +136,13 @@ void GameplayHandler::init()
             packet->nickname += *std::bit_cast<uint16_t*>(&data[offset]);
             offset += 2;
         }
-        offset += 2;
-
+        offset += sizeof(uint16_t);
         offset += sizeof(uint32_t) * 3;
-        std::memcpy(&packet->level, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->level);
+        std::memcpy(&packet->level, data + offset, sizeof(uint8_t));
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->exp, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->exp);
-        offset += sizeof(uint32_t) * 2;
+        std::memcpy(&packet->experience, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->experience);
+        offset += sizeof(uint32_t) * 4;
         std::memcpy(&packet->STR, data + offset, sizeof(uint32_t));
         boost::endian::little_to_native_inplace(packet->STR);
         offset += sizeof(uint32_t);
@@ -163,17 +161,17 @@ void GameplayHandler::init()
         std::memcpy(&packet->MEN, data + offset, sizeof(uint32_t));
         boost::endian::little_to_native_inplace(packet->MEN);
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->maxHP, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->maxHP);
+        std::memcpy(&packet->maximumHealthPoints, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->maximumHealthPoints);
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->curHP, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->curHP);
+        std::memcpy(&packet->currentHealthPoints, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->currentHealthPoints);
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->maxMP, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->maxMP);
+        std::memcpy(&packet->maximumManaPoints, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->maximumManaPoints);
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->curMP, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->curMP);
+        std::memcpy(&packet->currentManaPoints, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->currentManaPoints);
         offset += sizeof(uint32_t);
         std::memcpy(&packet->skillPoints, data + offset, sizeof(uint32_t));
         boost::endian::little_to_native_inplace(packet->skillPoints);
@@ -181,15 +179,14 @@ void GameplayHandler::init()
         std::memcpy(&packet->load, data + offset, sizeof(uint32_t));
         boost::endian::little_to_native_inplace(packet->load);
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->maxLoad, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->maxLoad);
-        offset += sizeof(uint32_t);
-        offset += sizeof(uint32_t) * 35 + 68;
+        std::memcpy(&packet->maximumLoad, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->maximumLoad);
+        offset += sizeof(uint32_t) * 4 * 21 - 8;
         std::memcpy(&packet->pAttack, data + offset, sizeof(uint32_t));
         boost::endian::little_to_native_inplace(packet->pAttack);
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->pAttackSpeed, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->pAttackSpeed);
+        std::memcpy(&packet->attackSpeed, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->attackSpeed);
         offset += sizeof(uint32_t);
         std::memcpy(&packet->pDefense, data + offset, sizeof(uint32_t));
         boost::endian::little_to_native_inplace(packet->pDefense);
@@ -206,8 +203,8 @@ void GameplayHandler::init()
         std::memcpy(&packet->mAttack, data + offset, sizeof(uint32_t));
         boost::endian::little_to_native_inplace(packet->mAttack);
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->mAttackSpeed, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->mAttackSpeed);
+        std::memcpy(&packet->castingSpeed, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->castingSpeed);
         offset += sizeof(uint32_t) * 2;
         std::memcpy(&packet->mDefense, data + offset, sizeof(uint32_t));
         boost::endian::little_to_native_inplace(packet->mDefense);
@@ -218,11 +215,11 @@ void GameplayHandler::init()
         std::memcpy(&packet->karma, data + offset, sizeof(uint32_t));
         boost::endian::little_to_native_inplace(packet->karma);
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->speedRun, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->speedRun);
+        std::memcpy(&packet->runningSpeed, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->runningSpeed);
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->speedWalk, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->speedWalk);
+        std::memcpy(&packet->walkingSpeed, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->walkingSpeed);
         offset += sizeof(uint32_t);
         offset += sizeof(uint32_t) * 18;
 
@@ -250,11 +247,11 @@ void GameplayHandler::init()
         offset += sizeof(uint16_t) * cubicCount;
         offset += sizeof(uint32_t) * 6 + sizeof(uint16_t) * 2;
 
-        std::memcpy(&packet->maxCP, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->maxCP);
+        std::memcpy(&packet->maximumCombatPoints, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->maximumCombatPoints);
         offset += sizeof(uint32_t);
-        std::memcpy(&packet->curCP, data + offset, sizeof(uint32_t));
-        boost::endian::little_to_native_inplace(packet->curCP);
+        std::memcpy(&packet->currentCombatPoints, data + offset, sizeof(uint32_t));
+        boost::endian::little_to_native_inplace(packet->currentCombatPoints);
         offset += sizeof(uint32_t);
 
         return packet;
@@ -276,6 +273,7 @@ void GameplayHandler::init()
         return packet;
     };
 
+    // Status Update [0e]
     m_parseHandler[0x0e] = [](uint8_t* data, uint16_t length) -> PacketPtr {
         auto packet = std::make_shared<StatusUpdate>(length);
 

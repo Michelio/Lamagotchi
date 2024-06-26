@@ -156,6 +156,8 @@ void LoginHandler::init()
 
         packet->count = data[3];
 
+        std::cout << "Server list:\n";
+
         uint8_t i = packet->count;
         uint16_t offset = 5;
         while (i)

@@ -1,4 +1,5 @@
 #include "bot_session.h"
+#include "game/entities/user.h"
 #include "network/gameplay_handler.h"
 #include "network/login_handler.h"
 #include "network/packets/game/char_info.hpp"
@@ -85,11 +86,80 @@ BotSession::BotSession(ConnectionPtr connection, std::string_view login, std::st
             DataPtr data = m_handler->serialize(response);
             m_connection->post(data, response.length);
             break;
-            }
+        }
         case 0x32: {
-            std::wcout << "Name: " << std::bit_cast<UserInfo*>(packet.get())->nickname << '\n';
+            auto ptr = std::bit_cast<UserInfo*>(packet.get());
+            Game::Vector3D position(ptr->x, ptr->y, ptr->z);
+            Game::User user{ptr->objectId, ptr->nickname, position, false};
+
+            user.setObjectTitle(ptr->title);
+            user.setLevel(ptr->level);
+            user.setExperience(ptr->experience);
+            user.setCurrentHealthPoints(ptr->currentHealthPoints);
+            user.setMaximumHealthPoints(ptr->maximumHealthPoints);
+            user.setCurrentManaPoints(ptr->currentManaPoints);
+            user.setMaximumManaPoints(ptr->maximumManaPoints);
+            user.setSkillPoints(ptr->skillPoints);
+            user.setLoad(ptr->load);
+            user.setMaximumLoad(ptr->maximumLoad);
+            user.setCurrentCombatPoints(ptr->currentCombatPoints);
+            user.setMaximumCombatPoints(ptr->maximumCombatPoints);
+            user.setSTR(ptr->STR);
+            user.setDEX(ptr->DEX);
+            user.setCON(ptr->CON);
+            user.setINT(ptr->INT);
+            user.setWIT(ptr->WIT);
+            user.setMEN(ptr->MEN);
+            user.setPAttack(ptr->pAttack);
+            user.setMAttack(ptr->mAttack);
+            user.setPDefense(ptr->pDefense);
+            user.setMDefense(ptr->mDefense);
+            user.setAttackSpeed(ptr->attackSpeed);
+            user.setCastingSpeed(ptr->castingSpeed);
+            user.setEvasion(ptr->evasion);
+            user.setAccuracy(ptr->accuracy);
+            user.setCriticalHit(ptr->critical);
+            user.setPvpStatus(ptr->pvpStatus);
+            user.setKarma(ptr->karma);
+            user.setRunningSpeed(ptr->runningSpeed);
+            user.setWalkingSpeed(ptr->walkingSpeed);
+
+            std::wcout << L"Title: " << user.getObjectTitle() << '\n';
+            std::wcout << L"Name: " << user.getObjectName() << '\n';
+            std::cout << std::dec;
+            std::cout << "Level: " << (int)user.getLevel() << '\n';
+            std::cout << "Exp: " << user.getExperience() << '\n';
+            std::cout << "STR: " << user.getSTR() << '\n';
+            std::cout << "DEX: " << user.getDEX() << '\n';
+            std::cout << "CON: " << user.getCON() << '\n';
+            std::cout << "INT: " << user.getINT() << '\n';
+            std::cout << "WIT: " << user.getWIT() << '\n';
+            std::cout << "MEN: " << user.getMEN() << '\n';
+            std::cout << "curCP: " << user.getCurrentCombatPoints() << ", maxCP: " << user.getMaximumCombatPoints()
+                      << '\n';
+            std::cout << "curHP: " << user.getCurrentHealthPoints() << ", maxHP: " << user.getMaximumHealthPoints()
+                      << '\n';
+            std::cout << "curMP: " << user.getCurrentManaPoints() << ", maxMP: " << user.getMaximumManaPoints() << '\n';
+            std::cout << "SP: " << user.getSkillPoints() << '\n';
+            std::cout << "Load: " << user.getLoad() << '/' << user.getMaximumLoad() << '\n';
+            std::cout << "PAttack: " << user.getPAttack() << '\n';
+            std::cout << "AttackSpeed: " << user.getAttackSpeed() << '\n';
+            std::cout << "PDefense: " << user.getPDefense() << '\n';
+            std::cout << "Evasion: " << user.getEvasion() << '\n';
+            std::cout << "Accuracy: " << user.getAccuracy() << '\n';
+            std::cout << "Critical Hit: " << user.getCriticalHit() << '\n';
+            std::cout << "MAttack: " << user.getMAttack() << '\n';
+            std::cout << "CastingSpeed: " << user.getCastingSpeed() << '\n';
+            std::cout << "MDefense: " << user.getMDefense() << '\n';
+            std::cout << "RunningSpeed: " << user.getRunningSpeed() << '\n';
+            std::cout << "WalkingSpeed: " << user.getWalkingSpeed() << '\n';
+            std::cout << "Karma: " << user.getKarma() << '\n';
+            std::cout << "Pvp status: " << (int)user.getPvpStatus() << '\n';
+            std::cout << "Pvp count: " << (int)user.getPvpCount() << '\n';
+            std::cout << "Pk count: " << (int)user.getPkCount() << '\n';
+
             break;
-            }
+        }
         case 0xd3: {
             NetPing response;
             DataPtr data = m_handler->serialize(response);
