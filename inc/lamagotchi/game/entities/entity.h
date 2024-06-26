@@ -3,6 +3,9 @@
 
 #include "object.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -41,5 +44,6 @@ protected:
 };
 
 } // namespace Game
+} // namespace Lamagotchi
 
 #endif // ENTITY_H

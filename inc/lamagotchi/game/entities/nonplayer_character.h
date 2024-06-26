@@ -3,6 +3,9 @@
 
 #include "live_entity.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -23,5 +26,6 @@ protected:
 };
 
 } // namespace Game
+} // namespace Lamagotchi
 
 #endif // NONPLAYER_CHARACTER_H

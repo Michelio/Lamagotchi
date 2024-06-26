@@ -20,11 +20,13 @@ struct CharInfo : Packet
     {
     }
 
-    uint32_t x = 0x00;
-    uint32_t y = 0x00;
-    uint32_t z = 0x00;
-    uint32_t objectId = 0x00;
-    std::wstring nickname = L"";
+    uint32_t x = 0;
+    uint32_t y = 0;
+    uint32_t z = 0;
+    uint32_t objectId = -1;
+    std::wstring objectTitle = L"";
+    std::wstring objectName = L"";
+    uint32_t karma = 0;
 };
 
 } // namespace Packets

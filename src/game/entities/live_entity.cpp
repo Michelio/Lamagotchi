@@ -1,5 +1,8 @@
 #include "game/entities/live_entity.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -79,14 +82,24 @@ uint32_t LiveEntity::getMaximumManaPoints() const
     return m_maximumManaPoints;
 }
 
-void LiveEntity::setSpeed(const uint32_t speed)
+void LiveEntity::setRunningSpeed(const uint32_t runningSpeed)
 {
-    m_speed = speed;
+    m_runningSpeed = runningSpeed;
 }
 
-uint32_t LiveEntity::getSpeed() const
+uint32_t LiveEntity::getRunningSpeed() const
 {
-    return m_speed;
+    return m_runningSpeed;
+}
+
+void LiveEntity::setWalkingSpeed(const uint32_t walkingSpeed)
+{
+    m_walkingSpeed = walkingSpeed;
+}
+
+uint32_t LiveEntity::getWalkingSpeed() const
+{
+    return m_walkingSpeed;
 }
 
 void LiveEntity::setAttackSpeed(const uint32_t attackSpeed)
@@ -119,6 +132,16 @@ uint32_t LiveEntity::getLoad() const
     return m_load;
 }
 
+void LiveEntity::setMaximumLoad(const uint32_t load)
+{
+    m_maximumLoad = load;
+}
+
+uint32_t LiveEntity::getMaximumLoad() const
+{
+    return m_maximumLoad;
+}
+
 bool LiveEntity::getIsAlive() const
 {
     return m_isAlive;
@@ -130,3 +153,4 @@ void LiveEntity::setIsAlive(const bool isAlive)
 }
 
 } // namespace Game
+} // namespace Lamagotchi

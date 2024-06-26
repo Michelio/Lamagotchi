@@ -1,5 +1,8 @@
 #include "game/entities/pet.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -29,3 +32,4 @@ PetType Pet::getPetType() const
 }
 
 } // namespace Game
+} // namespace Lamagotchi
