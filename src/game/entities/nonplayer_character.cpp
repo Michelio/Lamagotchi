@@ -1,5 +1,8 @@
 #include "game/entities/nonplayer_character.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -10,3 +13,4 @@ NonPlayerCharacter::NonPlayerCharacter(const uint32_t objectId, std::wstring_vie
 }
 
 } // namespace Game
+} // namespace Lamagotchi

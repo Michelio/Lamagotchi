@@ -1,5 +1,8 @@
 #include "game/entities/object.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -27,4 +30,15 @@ void Object::setObjectName(const std::wstring_view objectName)
     m_objectName = objectName;
 }
 
+std::wstring_view Object::getObjectTitle() const
+{
+    return m_objectTitle;
+}
+
+void Object::setObjectTitle(const std::wstring_view objectTitle)
+{
+    m_objectTitle = objectTitle;
+}
+
 } // namespace Game
+} // namespace Lamagotchi

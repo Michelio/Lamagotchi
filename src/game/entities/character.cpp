@@ -1,5 +1,8 @@
 #include "game/entities/character.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -49,44 +52,65 @@ uint32_t Character::getMainClassId() const
     return m_mainClassId;
 }
 
-void Character::setRace(const uint32_t race)
+void Character::setKarma(const uint32_t karma)
+{
+    m_karma = karma;
+}
+
+uint32_t Character::getKarma() const
+{
+    return m_karma;
+}
+
+void Character::setRace(const uint8_t race)
 {
     m_race = race;
 }
 
-uint32_t Character::getRace() const
+uint8_t Character::getRace() const
 {
     return m_race;
 }
 
-void Character::setSex(const uint32_t sex)
+void Character::setSex(const uint8_t sex)
 {
     m_sex = sex;
 }
 
-uint32_t Character::getSex() const
+uint8_t Character::getSex() const
 {
     return m_sex;
 }
 
-void Character::setHero(const uint32_t hero)
+void Character::setHero(const uint8_t hero)
 {
     m_hero = hero;
 }
 
-uint32_t Character::getHero() const
+uint8_t Character::getHero() const
 {
     return m_hero;
 }
 
-void Character::setNoble(const uint32_t noble)
+void Character::setNoble(const uint8_t noble)
 {
     m_noble = noble;
 }
 
-uint32_t Character::getNoble() const
+uint8_t Character::getNoble() const
 {
     return m_noble;
 }
 
+void Character::setPvpStatus(const uint8_t status)
+{
+    m_pvpStatus = status;
+}
+
+uint8_t Character::getPvpStatus() const
+{
+    return m_pvpStatus;
+}
+
 } // namespace Game
+} // namespace Lamagotchi

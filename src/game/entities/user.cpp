@@ -1,5 +1,8 @@
 #include "game/entities/user.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -108,64 +111,55 @@ uint32_t User::getMDefense() const
     return m_mDefense;
 }
 
-void User::setPAccuracy(const uint32_t pAccuracy)
+void User::setAccuracy(const uint32_t accuracy)
 {
-    m_pAccuracy = pAccuracy;
+    m_accuracy = accuracy;
 }
 
-uint32_t User::getPAccuracy() const
+uint32_t User::getAccuracy() const
 {
-    return m_pAccuracy;
+    return m_accuracy;
 }
 
-void User::setMAccuracy(const uint32_t mAccuracy)
+void User::setEvasion(const uint32_t evasion)
 {
-    m_mAccuracy = mAccuracy;
+    m_evasion = evasion;
 }
 
-uint32_t User::getMAccuracy() const
+uint32_t User::getEvasion() const
 {
-    return m_mAccuracy;
+    return m_evasion;
 }
 
-void User::setPEvasion(const uint32_t pEvasion)
+void User::setCriticalHit(const uint32_t criticalHit)
 {
-    m_pEvasion = pEvasion;
+    m_criticalHit = criticalHit;
 }
 
-uint32_t User::getPEvasion() const
+uint32_t User::getCriticalHit() const
 {
-    return m_pEvasion;
+    return m_criticalHit;
 }
 
-void User::setMEvasion(const uint32_t mEvasion)
+void User::setPvpCount(const uint32_t pvpCount)
 {
-    m_mEvasion = mEvasion;
+    m_pvpCount = pvpCount;
 }
 
-uint32_t User::getMEvasion() const
+uint32_t User::getPvpCount() const
 {
-    return m_mEvasion;
+    return m_pvpCount;
 }
 
-void User::setPCriticalHit(const uint32_t pCriticalHit)
+void User::setPkCount(const uint32_t pkCount)
 {
-    m_pCriticalHit = pCriticalHit;
+    m_pkCount = pkCount;
 }
 
-uint32_t User::getPCriticalHit() const
+uint32_t User::getPkCount() const
 {
-    return m_pCriticalHit;
-}
-
-void User::setMCriticalHit(const uint32_t mCriticalHit)
-{
-    m_mCriticalHit = mCriticalHit;
-}
-
-uint32_t User::getMCriticalHit() const
-{
-    return m_mCriticalHit;
+    return m_pkCount;
 }
 
 } // namespace Game
+} // namespace Lamagotchi

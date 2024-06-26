@@ -3,6 +3,9 @@
 
 #include "character.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -32,18 +35,16 @@ public:
     uint32_t getPDefense() const;
     void setMDefense(const uint32_t mDefense);
     uint32_t getMDefense() const;
-    void setPAccuracy(const uint32_t pAccuracy);
-    uint32_t getPAccuracy() const;
-    void setMAccuracy(const uint32_t mAccuracy);
-    uint32_t getMAccuracy() const;
-    void setPEvasion(const uint32_t pEvasion);
-    uint32_t getPEvasion() const;
-    void setMEvasion(const uint32_t mEvasion);
-    uint32_t getMEvasion() const;
-    void setPCriticalHit(const uint32_t pCriticalHit);
-    uint32_t getPCriticalHit() const;
-    void setMCriticalHit(const uint32_t mCriticalHit);
-    uint32_t getMCriticalHit() const;
+    void setAccuracy(const uint32_t accuracy);
+    uint32_t getAccuracy() const;
+    void setEvasion(const uint32_t evasion);
+    uint32_t getEvasion() const;
+    void setCriticalHit(const uint32_t criticalHit);
+    uint32_t getCriticalHit() const;
+    void setPvpCount(const uint32_t pvpCount);
+    uint32_t getPvpCount() const;
+    void setPkCount(const uint32_t pkCount);
+    uint32_t getPkCount() const;
 
 private:
     uint32_t m_STR = 0;
@@ -56,14 +57,14 @@ private:
     uint32_t m_mAttack = 0;
     uint32_t m_pDefense = 0;
     uint32_t m_mDefense = 0;
-    uint32_t m_pAccuracy = 0;
-    uint32_t m_mAccuracy = 0;
-    uint32_t m_pEvasion = 0;
-    uint32_t m_mEvasion = 0;
-    uint32_t m_pCriticalHit = 0;
-    uint32_t m_mCriticalHit = 0;
+    uint32_t m_accuracy = 0;
+    uint32_t m_evasion = 0;
+    uint32_t m_criticalHit = 0;
+    uint32_t m_pvpCount = 0;
+    uint32_t m_pkCount = 0;
 };
 
 } // namespace Game
+} // namespace Lamagotchi
 
 #endif // USER_H

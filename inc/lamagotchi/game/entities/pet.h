@@ -3,6 +3,9 @@
 
 #include "nonplayer_character.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -30,5 +33,6 @@ private:
 };
 
 } // namespace Game
+} // namespace Lamagotchi
 
 #endif // PET_H

@@ -1,5 +1,8 @@
 #include "game/entities/entity.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -21,3 +24,4 @@ Entity::Entity(const uint32_t objectId, std::wstring_view objectName, const Vect
 }
 
 } // namespace Game
+} // namespace Lamagotchi

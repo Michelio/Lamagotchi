@@ -3,6 +3,9 @@
 
 #include "entity.h"
 
+namespace Lamagotchi
+{
+
 namespace Game
 {
 
@@ -27,14 +30,18 @@ public:
     uint32_t getMaximumHealthPoints() const;
     void setMaximumManaPoints(const uint32_t maximumManaPoints);
     uint32_t getMaximumManaPoints() const;
-    void setSpeed(const uint32_t speed);
-    uint32_t getSpeed() const;
+    void setRunningSpeed(const uint32_t runningSpeed);
+    uint32_t getRunningSpeed() const;
+    void setWalkingSpeed(const uint32_t walkingSpeed);
+    uint32_t getWalkingSpeed() const;
     void setAttackSpeed(const uint32_t attackSpeed);
     uint32_t getAttackSpeed() const;
     void setCastingSpeed(const uint32_t castingSpeed);
     uint32_t getCastingSpeed() const;
     void setLoad(const uint32_t load);
     uint32_t getLoad() const;
+    void setMaximumLoad(const uint32_t load);
+    uint32_t getMaximumLoad() const;
     bool getIsAlive() const;
     void setIsAlive(const bool isAlive);
 
@@ -45,14 +52,17 @@ protected:
     uint32_t m_currentManaPoints = 0;
     uint32_t m_maximumHealthPoints = 0;
     uint32_t m_maximumManaPoints = 0;
-    uint32_t m_speed = 0;
+    uint32_t m_runningSpeed = 0;
+    uint32_t m_walkingSpeed = 0;
     uint32_t m_attackSpeed = 0;
     uint32_t m_castingSpeed = 0;
     uint32_t m_load = 0;
+    uint32_t m_maximumLoad = 0;
     uint8_t m_level = 0;
     bool m_isAlive;
 };
 
 } // namespace Game
+} // namespace Lamagotchi
 
 #endif // LIVE_ENTITY_H
