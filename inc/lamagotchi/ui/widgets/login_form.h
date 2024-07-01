@@ -3,7 +3,6 @@
 
 #include <QCheckBox>
 #include <QComboBox>
-#include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -23,19 +22,20 @@ public:
     LoginForm(QWidget* parent = nullptr);
     ~LoginForm() = default;
 
-private:
-    QGridLayout* m_mainLayout;
-    QComboBox* m_accountsComboBox;
-    QLineEdit* m_loginLineEdit;
-    QLineEdit* m_passwordLineEdit;
-    QPushButton* m_loginButton;
-    QCheckBox* m_saveCheckBox;
-
 signals:
     void credentialsReady(std::string login, std::string password);
 
 private slots:
-    void onLoginClicked();
+    void onLogInClicked();
+    void onLoginSettingsClicked();
+
+private:
+    QComboBox* m_accountsComboBox;
+    QPushButton* m_logInButton;
+    QPushButton* m_loginSettingsButton;
+    QLineEdit* m_loginLineEdit;
+    QLineEdit* m_passwordLineEdit;
+    QCheckBox* m_saveCheckBox;
 };
 
 } // namespace Ui

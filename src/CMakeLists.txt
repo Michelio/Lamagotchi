@@ -7,6 +7,7 @@ set(PROJECT_HEADERS
     ${INCROOT}/ui/widgets/selected_enemy.h
     ${INCROOT}/ui/widgets/character_stats.h
     ${INCROOT}/ui/widgets/login_form.h
+    ${INCROOT}/ui/widgets/network_settings.h
     ${INCROOT}/ui/layouts/flow_layout.h
     ${INCROOT}/ui/layouts/flex_grid_layout.h
     ${INCROOT}/crypting/blow_fish.h
@@ -62,6 +63,7 @@ set(PROJECT_SOURCES
     ${SRCROOT}/ui/widgets/selected_enemy.cpp
     ${SRCROOT}/ui/widgets/character_stats.cpp
     ${SRCROOT}/ui/widgets/login_form.cpp
+    ${SRCROOT}/ui/widgets/network_settings.cpp
     ${SRCROOT}/ui/layouts/flow_layout.cpp
     ${SRCROOT}/ui/layouts/flex_grid_layout.cpp
     ${SRCROOT}/crypting/blow_fish.cpp
