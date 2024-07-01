@@ -110,7 +110,7 @@ QWidget* CharacterStats::setupGeneralGroup()
     m_cpBar->setMaximum(100);
     m_cpBar->setValue(100);
 
-    QPixmap loadPixmap{"../assets/images/bag-icon.png"};
+    QPixmap loadPixmap{"../assets/images/ui/bag-icon.png"};
     QLabel* loadIcon = new QLabel{generalGroupBox};
     loadIcon->setPixmap(loadPixmap.scaled(25, 25, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     loadIcon->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
